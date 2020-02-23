@@ -1,27 +1,56 @@
 module Main exposing (..)
 
 import Browser
+import CustomTime exposing (FiveMinuteBasedTime, Hour)
+import Date
+import DayPlan exposing (DayPlan)
 import Html exposing (Html, div, img)
 import Html.Attributes exposing (src)
-import ToDo exposing (ToDo)
+import Task
+import Time exposing (Month(..), Posix, Zone, utc)
+import Util exposing (Location, getNextId, location, onlyUpdateX)
 
 
 
 ---- MODEL ----
 
 
+type alias Start =
+    Hour
+
+
+type alias End =
+    Hour
+
+
 type alias Model =
-    {}
+    { home : Location
+    , locationHistory : List Location
+    , timeZone : Time.Zone
+    , now : Time.Posix
+    , zoom : ( Start, End )
+    , workTime : ( Start, End )
+    , plans : List DayPlan
+    , currentPlan : Maybe DayPlan
+    }
 
 
 initModel : Model
 initModel =
-    {}
+    { home = location "Köln"
+    , timeZone = utc
+    , locationHistory = []
+    , now = Time.millisToPosix 0
+    , zoom = ( 8, 23 )
+    , workTime = ( 8, 22 )
+    , plans = []
+    , currentPlan = Nothing
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( initModel, Cmd.none )
+    ( initModel, Task.perform AdjustTimeZone Time.here )
 
 
 
@@ -29,16 +58,80 @@ init =
 
 
 type Msg
-    = ZoomIn
-    | ZoomOut
-    | AddToDo
-    | RemoveToDo ToDo
-    | ToDoMsg ToDo.Msg
+    = SetHome Location
+    | AdjustTimeZone Time.Zone
+    | UpdateNow Posix
+    | Zoom ( Start, End )
+    | SetWorkTime ( Start, End )
+    | CreatePlan
+    | LoadPlan DayPlan
+    | RemovePlan DayPlan
+    | RemindUserToIncreaseSpareTime
+    | PersistState
+    | UpdateDayPlan DayPlan.Msg DayPlan
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        SetHome location ->
+            ( { model | home = location }, Cmd.none )
+
+        UpdateNow posix ->
+            ( { model | now = posix }, Cmd.none )
+
+        Zoom hourInterval ->
+            ( { model | zoom = hourInterval }, Cmd.none )
+
+        SetWorkTime interval ->
+            ( { model | workTime = interval }, Cmd.none )
+
+        CreatePlan ->
+            let
+                nextId =
+                    getNextId model.plans model.now
+            in
+            ( { model
+                | plans = DayPlan.new model.timeZone model.now nextId :: model.plans
+              }
+            , Cmd.none
+            )
+
+        LoadPlan dayPlan ->
+            ( { model | currentPlan = Just dayPlan }, Cmd.none )
+
+        RemovePlan dayPlan ->
+            ( { model
+                | currentPlan =
+                    if model.currentPlan == Just dayPlan then
+                        Nothing
+
+                    else
+                        Just dayPlan
+                , plans = List.filter (\x -> x /= dayPlan) model.plans
+              }
+            , Cmd.none
+            )
+
+        UpdateDayPlan planMsg dayPlan ->
+            ( { model
+                | plans = onlyUpdateX dayPlan (DayPlan.update planMsg) model.plans
+              }
+            , Cmd.none
+            )
+
+        RemindUserToIncreaseSpareTime ->
+            ( model, Cmd.none )
+
+        PersistState ->
+            ( model, Cmd.none )
+
+        AdjustTimeZone zone ->
+            ( { model
+                | timeZone = zone
+              }
+            , Cmd.none
+            )
 
 
 
@@ -53,6 +146,15 @@ view model =
 
 
 
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Time.every 1000 UpdateNow
+
+
+
 ---- PROGRAM ----
 
 
@@ -62,5 +164,5 @@ main =
         { view = view
         , init = \_ -> init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
