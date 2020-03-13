@@ -2,7 +2,6 @@ module ToDo exposing (..)
 
 import CustomTime exposing (FiveMinuteBasedTime, fiveMinutes)
 import Element as Color exposing (Color)
-import Time
 import Util exposing (ID, Location)
 
 
