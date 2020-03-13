@@ -101,6 +101,6 @@ update msg dayPlan =
 -- VIEW
 
 
-view : ToDo -> Html Msg
-view toDo =
+view : DayPlan -> Html msg
+view dayplan =
     Html.div [] [ Html.text "a dayplan" ]

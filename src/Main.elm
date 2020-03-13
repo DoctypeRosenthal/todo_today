@@ -140,8 +140,19 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
+    -- see https://keep.google.com/u/0/#home for design idea
     div []
-        [ img [ src "/logo.svg" ] []
+        [ Html.h1 [] [ Html.text "ToDos" ]
+        , Html.input [ Html.Attributes.value "Ich bin eine Searchbar! 👻" ] []
+        , Html.button [] [ Html.text "Neuer Tagesplan +" ]
+        , Html.div []
+            (Html.h5 [] [ Html.text "Pinned" ]
+                :: List.map DayPlan.view model.plans
+            )
+        , Html.div []
+            (Html.h5 [] [ Html.text "Others" ]
+                :: List.map DayPlan.view model.plans
+            )
         ]
 
 
