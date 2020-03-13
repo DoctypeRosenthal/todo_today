@@ -3,6 +3,7 @@ module DayPlan exposing (..)
 import CustomTime exposing (to5MinutesBasedDayTime)
 import Date exposing (Date)
 import Element as Color exposing (Color)
+import Html exposing (Html)
 import Time
 import ToDo exposing (ToDo)
 import Util exposing (ID, Location, getNextId, onlyUpdateX)
@@ -94,3 +95,12 @@ update msg dayPlan =
             { dayPlan
                 | todos = List.filter (\x -> x /= toDo) dayPlan.todos
             }
+
+
+
+-- VIEW
+
+
+view : ToDo -> Html Msg
+view toDo =
+    Html.div [] [ Html.text "a dayplan" ]

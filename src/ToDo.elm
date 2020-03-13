@@ -2,6 +2,7 @@ module ToDo exposing (..)
 
 import CustomTime exposing (FiveMinuteBasedTime, fiveMinutes)
 import Element as Color exposing (Color)
+import Html exposing (Html)
 import Util exposing (ID, Location)
 
 
@@ -91,3 +92,12 @@ update msg todo =
 
         SetColor color ->
             { todo | color = color }
+
+
+
+-- VIEW
+
+
+view : ToDo -> Html Msg
+view toDo =
+    Html.div [] [ Html.text "a todo" ]
