@@ -92,16 +92,21 @@ update msg model =
             ( { model | workTime = interval }, Cmd.none )
 
         CreatePlan title ->
-            let
-                nextId =
-                    getNextId model.plans model.now
+            if title == "" then
+                ( model, Cmd.none )
 
-                nextModel =
-                    { model
-                        | plans = DayPlan.new model.timeZone model.now nextId title :: model.plans
-                    }
-            in
-            update (SetNextPlanTitle "") nextModel
+            else
+                let
+                    nextId =
+                        getNextId model.plans model.now
+
+                    newPlan =
+                        DayPlan.new model.timeZone model.now nextId title
+
+                    ( nextModel, _ ) =
+                        update (SetNextPlanTitle "") { model | plans = newPlan :: model.plans }
+                in
+                update (LoadPlan newPlan) nextModel
 
         LoadPlan dayPlan ->
             ( { model | currentPlan = Just dayPlan }, Cmd.none )
@@ -140,11 +145,7 @@ update msg model =
             )
 
         SetNextPlanTitle title ->
-            if title == "Enter" then
-                update (CreatePlan title) model
-
-            else
-                ( { model | nextPlanTitle = title }, Cmd.none )
+            ( { model | nextPlanTitle = title }, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
