@@ -4,6 +4,7 @@ import CustomTime exposing (to5MinutesBasedDayTime)
 import Date exposing (Date)
 import Element as Color exposing (Color)
 import Html exposing (Html)
+import Html.Events exposing (onClick)
 import Time
 import ToDo exposing (ToDo)
 import Util exposing (ID, Location, getNextId, onlyUpdateX)
@@ -51,7 +52,7 @@ type alias Now =
 type Msg
     = SetTitle String
     | SetColor Color
-    | TogglePinning Bool
+    | TogglePinning
     | SetLastUsedAt Date
     | AddToDo Time.Zone Now Location
     | UpdateToDo ToDo.Msg ToDo
@@ -67,8 +68,8 @@ update msg dayPlan =
         SetColor color ->
             { dayPlan | color = color }
 
-        TogglePinning bool ->
-            { dayPlan | isPinnedToTop = bool }
+        TogglePinning ->
+            { dayPlan | isPinnedToTop = not dayPlan.isPinnedToTop }
 
         SetLastUsedAt date ->
             { dayPlan | lastUsedAt = date }
@@ -101,6 +102,17 @@ update msg dayPlan =
 -- VIEW
 
 
-view : DayPlan -> Html msg
+view : DayPlan -> Html Msg
 view dayplan =
-    Html.div [] [ Html.text "a dayplan" ]
+    Html.div []
+        [ Html.text dayplan.title
+        , Html.button [ onClick TogglePinning ]
+            [ Html.text
+                (if dayplan.isPinnedToTop then
+                    "unpin"
+
+                 else
+                    "pin!"
+                )
+            ]
+        ]

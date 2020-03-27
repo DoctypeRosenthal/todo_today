@@ -6,6 +6,7 @@ import Date
 import DayPlan exposing (DayPlan)
 import Html exposing (Html, div, img)
 import Html.Attributes exposing (src)
+import Html.Events exposing (onClick)
 import Task
 import Time exposing (Month(..), Posix, Zone, utc)
 import Util exposing (Location, getNextId, location, onlyUpdateX)
@@ -68,7 +69,7 @@ type Msg
     | RemovePlan DayPlan
     | RemindUserToIncreaseSpareTime
     | PersistState
-    | UpdateDayPlan DayPlan.Msg DayPlan
+    | UpdateDayPlan DayPlan DayPlan.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -113,13 +114,6 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateDayPlan planMsg dayPlan ->
-            ( { model
-                | plans = onlyUpdateX dayPlan (DayPlan.update planMsg) model.plans
-              }
-            , Cmd.none
-            )
-
         RemindUserToIncreaseSpareTime ->
             ( model, Cmd.none )
 
@@ -133,6 +127,13 @@ update msg model =
             , Cmd.none
             )
 
+        UpdateDayPlan dayPlan planMsg ->
+            ( { model
+                | plans = onlyUpdateX dayPlan (DayPlan.update planMsg) model.plans
+              }
+            , Cmd.none
+            )
+
 
 
 ---- VIEW ----
@@ -140,20 +141,32 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
+    let
+        pinnedPlans =
+            List.filter .isPinnedToTop model.plans
+
+        otherPlans =
+            List.filter (not << .isPinnedToTop) model.plans
+    in
     -- see https://keep.google.com/u/0/#home for design idea
     div []
         [ Html.h1 [] [ Html.text "ToDos" ]
         , Html.input [ Html.Attributes.value "Ich bin eine Searchbar! 👻" ] []
-        , Html.button [] [ Html.text "Neuer Tagesplan +" ]
+        , Html.button [ onClick CreatePlan ] [ Html.text "Neuer Tagesplan +" ]
         , Html.div []
             (Html.h5 [] [ Html.text "Pinned" ]
-                :: List.map DayPlan.view model.plans
+                :: List.map dayPlans pinnedPlans
             )
         , Html.div []
             (Html.h5 [] [ Html.text "Others" ]
-                :: List.map DayPlan.view model.plans
+                :: List.map dayPlans otherPlans
             )
         ]
+
+
+dayPlans : DayPlan.DayPlan -> Html Msg
+dayPlans dayPlan =
+    Html.map (UpdateDayPlan dayPlan) (DayPlan.view dayPlan)
 
 
 
