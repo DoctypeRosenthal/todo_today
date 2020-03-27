@@ -5,7 +5,7 @@ import Date exposing (Date)
 import Element as Color exposing (Color)
 import Html exposing (Html)
 import Html.Attributes
-import Html.Events exposing (onClick, onDoubleClick)
+import Html.Events exposing (onClick, onDoubleClick, onInput)
 import Time
 import ToDo exposing (ToDo)
 import Util exposing (ID, Location, getNextId, onlyUpdateX)
@@ -27,14 +27,14 @@ type alias DayPlan =
     }
 
 
-new : Time.Zone -> Time.Posix -> ID -> DayPlan
-new timeZone posix id =
+new : Time.Zone -> Time.Posix -> ID -> String -> DayPlan
+new timeZone posix id title =
     let
         today =
             Date.fromPosix timeZone posix
     in
     { id = id
-    , title = "New Plan"
+    , title = title
     , color = Color.rgb 255 255 255
     , createdAt = today
     , lastUsedAt = today

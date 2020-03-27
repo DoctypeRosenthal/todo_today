@@ -2,11 +2,11 @@ module Main exposing (..)
 
 import Browser
 import CustomTime exposing (FiveMinuteBasedTime, Hour)
-import Date
 import DayPlan exposing (DayPlan)
-import Html exposing (Html, div, img)
-import Html.Attributes exposing (src)
-import Html.Events exposing (onClick)
+import Html exposing (Html, div)
+import Html.Attributes
+import Html.Events exposing (on, onInput)
+import Json.Decode as Decode
 import Task
 import Time exposing (Month(..), Posix, Zone, utc)
 import Util exposing (Location, getNextId, location, onlyUpdateX)
@@ -32,6 +32,7 @@ type alias Model =
     , zoom : ( Start, End )
     , workTime : ( Start, End )
     , plans : List DayPlan
+    , nextPlanTitle : String
     , currentPlan : Maybe DayPlan
     }
 
@@ -46,6 +47,7 @@ initModel =
     , workTime = ( 8, 22 )
     , plans = []
     , currentPlan = Nothing
+    , nextPlanTitle = ""
     }
 
 
@@ -64,12 +66,14 @@ type Msg
     | UpdateNow Posix
     | Zoom ( Start, End )
     | SetWorkTime ( Start, End )
-    | CreatePlan
+    | CreatePlan String
     | LoadPlan DayPlan
     | RemovePlan DayPlan
     | RemindUserToIncreaseSpareTime
     | PersistState
+    | SetNextPlanTitle String
     | UpdateDayPlan DayPlan DayPlan.Msg
+    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -87,16 +91,17 @@ update msg model =
         SetWorkTime interval ->
             ( { model | workTime = interval }, Cmd.none )
 
-        CreatePlan ->
+        CreatePlan title ->
             let
                 nextId =
                     getNextId model.plans model.now
+
+                nextModel =
+                    { model
+                        | plans = DayPlan.new model.timeZone model.now nextId title :: model.plans
+                    }
             in
-            ( { model
-                | plans = DayPlan.new model.timeZone model.now nextId :: model.plans
-              }
-            , Cmd.none
-            )
+            update (SetNextPlanTitle "") nextModel
 
         LoadPlan dayPlan ->
             ( { model | currentPlan = Just dayPlan }, Cmd.none )
@@ -134,6 +139,16 @@ update msg model =
             , Cmd.none
             )
 
+        SetNextPlanTitle title ->
+            if title == "Enter" then
+                update (CreatePlan title) model
+
+            else
+                ( { model | nextPlanTitle = title }, Cmd.none )
+
+        NoOp ->
+            ( model, Cmd.none )
+
 
 
 ---- VIEW ----
@@ -151,8 +166,7 @@ view model =
     -- see https://keep.google.com/u/0/#home for design idea
     div []
         [ Html.h1 [] [ Html.text "ToDos" ]
-        , Html.input [ Html.Attributes.value "Ich bin eine Searchbar! 👻" ] []
-        , Html.button [ onClick CreatePlan ] [ Html.text "Neuer Tagesplan +" ]
+        , viewNextDayPlanTitle model.nextPlanTitle
         , Html.div []
             (Html.h5 [] [ Html.text "Pinned" ]
                 :: List.map dayPlans pinnedPlans
@@ -162,6 +176,30 @@ view model =
                 :: List.map dayPlans otherPlans
             )
         ]
+
+
+viewNextDayPlanTitle : String -> Html Msg
+viewNextDayPlanTitle title =
+    Html.input
+        [ Html.Attributes.placeholder "New Dayplan..."
+        , Html.Attributes.value title
+        , onInput SetNextPlanTitle
+        , on "keydown" (executeOnEnter (CreatePlan title))
+        ]
+        []
+
+
+executeOnEnter : Msg -> Decode.Decoder Msg
+executeOnEnter msg =
+    Decode.map
+        (\str ->
+            if str == "Enter" then
+                msg
+
+            else
+                NoOp
+        )
+        (Decode.field "key" Decode.string)
 
 
 dayPlans : DayPlan.DayPlan -> Html Msg
