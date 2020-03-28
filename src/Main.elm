@@ -192,7 +192,8 @@ view model =
 modalView : DayPlan -> Html Msg
 modalView plan =
     Html.div [ Html.Attributes.class "editor" ]
-        [ Html.div [ Html.Attributes.class "editor__inner" ]
+        [ Html.div [ Html.Attributes.class "editor__background", onClick CloseCurrentPlan ] []
+        , Html.div [ Html.Attributes.class "editor__inner" ]
             [ Html.div [ Html.Attributes.class "editor__top-bar" ]
                 [ Html.b [ Html.Attributes.class "editor__title" ] [ Html.text plan.title ]
                 , Html.button [ Html.Attributes.class "editor__close", onClick CloseCurrentPlan ] [ Html.text "Schließen" ]
