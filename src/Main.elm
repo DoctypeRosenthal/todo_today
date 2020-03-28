@@ -5,7 +5,7 @@ import CustomTime exposing (FiveMinuteBasedTime, Hour)
 import DayPlan exposing (DayPlan)
 import Html exposing (Html, div)
 import Html.Attributes
-import Html.Events exposing (on, onInput)
+import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 import Task
 import Time exposing (Month(..), Posix, Zone, utc)
@@ -68,6 +68,7 @@ type Msg
     | SetWorkTime ( Start, End )
     | CreatePlan String
     | LoadPlan DayPlan
+    | CloseCurrentPlan
     | RemovePlan DayPlan
     | RemindUserToIncreaseSpareTime
     | PersistState
@@ -110,6 +111,9 @@ update msg model =
 
         LoadPlan dayPlan ->
             ( { model | currentPlan = Just dayPlan }, Cmd.none )
+
+        CloseCurrentPlan ->
+            ( { model | currentPlan = Nothing }, Cmd.none )
 
         RemovePlan dayPlan ->
             ( { model
@@ -176,6 +180,24 @@ view model =
             (Html.h5 [] [ Html.text "Others" ]
                 :: List.map dayPlans otherPlans
             )
+        , case model.currentPlan of
+            Just plan ->
+                modalView plan
+
+            Nothing ->
+                Html.text ""
+        ]
+
+
+modalView : DayPlan -> Html Msg
+modalView plan =
+    Html.div [ Html.Attributes.class "editor" ]
+        [ Html.div [ Html.Attributes.class "editor__inner" ]
+            [ Html.div [ Html.Attributes.class "editor__top-bar" ]
+                [ Html.b [ Html.Attributes.class "editor__title" ] [ Html.text plan.title ]
+                , Html.button [ Html.Attributes.class "editor__close", onClick CloseCurrentPlan ] [ Html.text "Schließen" ]
+                ]
+            ]
         ]
 
 
