@@ -2,7 +2,6 @@ module DayPlan exposing (Model, Msg(..), Now, ViewModel, new, update, view)
 
 import CustomTime exposing (to5MinutesBasedDayTime)
 import Date exposing (Date)
-import Element as Color exposing (Color)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events exposing (onClick, onDoubleClick, onInput)
@@ -67,7 +66,7 @@ type Msg
     | TogglePinning
     | SetLastUsedAt Date
     | AddToDo Time.Zone Now Location
-    | UpdateToDo ToDo.Msg ToDo
+    | UpdateToDo ToDo ToDo.Msg
     | RemoveToDo ToDo
     | ToggleIsEditingTitle
     | ToggleColorPicker
@@ -101,7 +100,7 @@ updateDayPlan msg dayPlan =
             in
             { dayPlan | todos = newTodo :: dayPlan.todos }
 
-        UpdateToDo toDoMsg toDo ->
+        UpdateToDo toDo toDoMsg ->
             { dayPlan
                 | todos = onlyUpdateX toDo (ToDo.update toDoMsg) dayPlan.todos
             }
@@ -164,17 +163,24 @@ view ({ dayPlan } as viewModel) =
                 , Html.text <| Date.format "dd.M.y" dayPlan.lastUsedAt
                 ]
             ]
-        , Html.div [ Html.Attributes.class "dayplan__main" ] []
+        , Html.div
+            [ Html.Attributes.class "dayplan__main" ]
+            (List.map todosView dayPlan.todos)
         , Html.div [ Html.Attributes.class "dayplan__footer" ]
             [ Html.button
                 [ Html.Attributes.class "dayplan__color-picker-btn", onClick ToggleColorPicker ]
-                [ colorPicker viewModel.isColorPickerVisible dayPlan.color ]
+                [ colorPicker viewModel.isColorPickerVisible ]
             ]
         ]
 
 
-colorPicker : Bool -> String -> Html Msg
-colorPicker isVisible selectedColor =
+todosView : ToDo -> Html Msg
+todosView todo =
+    Html.map (UpdateToDo todo) (ToDo.view todo)
+
+
+colorPicker : Bool -> Html Msg
+colorPicker isVisible =
     Html.div
         [ Html.Attributes.class
             ("dayplan__color-picker "

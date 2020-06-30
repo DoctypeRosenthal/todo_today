@@ -1,4 +1,4 @@
-module Main exposing (End, Model, Msg(..), Start, dayPlans, executeOnEnter, init, initModel, main, modalView, subscriptions, update, view, viewNextDayPlanTitle)
+module Main exposing (End, Model, Msg(..), Start, dayPlansView, executeOnEnter, init, initModel, main, modalView, subscriptions, update, view, viewNextDayPlanTitle)
 
 import Browser
 import CustomTime exposing (FiveMinuteBasedTime, Hour)
@@ -73,7 +73,7 @@ type Msg
     | RemindUserToIncreaseSpareTime
     | PersistState
     | SetNextPlanTitle String
-    | UpdateDayPlan DayPlan.ViewModel DayPlan.Msg
+    | UpdateDayPlan DayPlan.ViewModel DayPlan.Msg -- Reihenfolge so besser wegen message mapping via partial application
     | NoOp
 
 
@@ -175,11 +175,11 @@ view model =
         , viewNextDayPlanTitle model.nextPlanTitle
         , Html.div []
             (Html.h5 [] [ Html.text "Pinned" ]
-                :: List.map dayPlans pinnedPlans
+                :: List.map dayPlansView pinnedPlans
             )
         , Html.div []
             (Html.h5 [] [ Html.text "Others" ]
-                :: List.map dayPlans otherPlans
+                :: List.map dayPlansView otherPlans
             )
         , case model.currentPlan of
             Just plan ->
@@ -227,8 +227,8 @@ executeOnEnter msg =
         (Decode.field "key" Decode.string)
 
 
-dayPlans : DayPlan.ViewModel -> Html Msg
-dayPlans dayPlan =
+dayPlansView : DayPlan.ViewModel -> Html Msg
+dayPlansView dayPlan =
     Html.map (UpdateDayPlan dayPlan) (DayPlan.view dayPlan)
 
 
