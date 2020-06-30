@@ -135,34 +135,41 @@ update msg model =
 view : ViewModel -> Html Msg
 view ({ dayPlan } as viewModel) =
     Html.div [ Html.Attributes.class ("dayplan " ++ dayPlan.color) ]
-        [ if viewModel.isEditingTitle then
-            Html.input
-                [ Html.Attributes.type_ "text"
-                , Html.Attributes.value dayPlan.title
-                , Html.Events.onInput SetTitle
-                , Html.Events.onBlur ToggleIsEditingTitle
-                ]
-                []
+        [ Html.div [ Html.Attributes.class "dayplan__header" ]
+            [ Html.h3
+                [ Html.Attributes.class "dayplan__title", onDoubleClick ToggleIsEditingTitle ]
+                [ if viewModel.isEditingTitle then
+                    Html.input
+                        [ Html.Attributes.type_ "text"
+                        , Html.Attributes.value dayPlan.title
+                        , Html.Events.onInput SetTitle
+                        , Html.Events.onBlur ToggleIsEditingTitle
+                        ]
+                        []
 
-          else
-            Html.span
-                [ onDoubleClick ToggleIsEditingTitle ]
-                [ Html.text dayPlan.title
-                , Html.text " zuletzt benutzt:"
-                , Html.text <| Date.toIsoString dayPlan.lastUsedAt
-                ]
-        , Html.button
-            [ onClick TogglePinning
-            , if dayPlan.isPinnedToTop then
-                Html.Attributes.class "pinned"
+                  else
+                    Html.text dayPlan.title
+                , Html.button
+                    [ onClick TogglePinning
+                    , if dayPlan.isPinnedToTop then
+                        Html.Attributes.class "pinned"
 
-              else
-                Html.Attributes.class "unpinned"
+                      else
+                        Html.Attributes.class "unpinned"
+                    ]
+                    []
+                ]
+            , Html.div [ Html.Attributes.class "dayplan__subtitle" ]
+                [ Html.text " zuletzt benutzt: "
+                , Html.text <| Date.format "dd.M.y" dayPlan.lastUsedAt
+                ]
             ]
-            []
-        , Html.button
-            [ Html.Attributes.class "dayplan__color-picker-btn", onClick ToggleColorPicker ]
-            [ colorPicker viewModel.isColorPickerVisible dayPlan.color ]
+        , Html.div [ Html.Attributes.class "dayplan__main" ] []
+        , Html.div [ Html.Attributes.class "dayplan__footer" ]
+            [ Html.button
+                [ Html.Attributes.class "dayplan__color-picker-btn", onClick ToggleColorPicker ]
+                [ colorPicker viewModel.isColorPickerVisible dayPlan.color ]
+            ]
         ]
 
 

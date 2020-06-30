@@ -1,19 +1,17 @@
-@import "constants.styl"
+@import "mixins.styl"
 
 .dayplan
-  position absolute
+  position relative
   width width_dayplan
   box-shadow box_shadow
   margin 1em
-  padding default_spacing
 
   soft_bg_colors()
 
   button
-    border-radius: 100%
     padding 1em
     background-color transparent
-    border 1px solid gray
+    border none
 
     &.pinned,
     &.unpinned
@@ -28,6 +26,27 @@
 
     &.unpinned
       icon("../public/unpinned.svg")
+
+  &__header
+    padding big_spacing big_spacing default_spacing
+    border-bottom 1px solid rgba(black, 0.1)
+
+  &__main
+    padding default_spacing big_spacing
+
+  &__footer
+    border-top 1px solid rgba(black, 0.1)
+    padding default_spacing big_spacing big_spacing
+
+  &__title
+    display flex
+    justify-content space-between
+    align-items center
+
+  &__subtitle
+    font-size .7rem
+    text-transform: uppercase
+    letter-spacing 1px
 
   &__color-picker-btn
       position: relative
