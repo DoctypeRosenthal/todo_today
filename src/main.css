@@ -1,3 +1,4 @@
+@import "normalize.css";
 [data-elm-hot="true"] {
   height: inherit;
 }
@@ -52,12 +53,22 @@ img {
   width: 240px;
   box-shadow: 4px 4px 20px -10px #404040;
   margin: 1em;
-  padding: 1em;
-  border-radius: 1em;
+  padding: 10px;
+}
+.dayplan.red {
+  background-color: #ffccbe;
+}
+.dayplan.blue {
+  background-color: #83c1e2;
+}
+.dayplan.yellow {
+  background-color: #fff770;
 }
 .dayplan button {
   border-radius: 100%;
   padding: 1em;
+  background-color: transparent;
+  border: 1px solid #808080;
 }
 .dayplan button.pinned,
 .dayplan button.unpinned {
@@ -68,8 +79,46 @@ img {
   width: 32px;
 }
 .dayplan button.pinned {
+  background-repeat: no-repeat;
+  background-position: center;
   background-image: url("../public/pinned.svg");
 }
 .dayplan button.unpinned {
+  background-repeat: no-repeat;
+  background-position: center;
   background-image: url("../public/unpinned.svg");
+}
+.dayplan__color-picker-btn {
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../public/palette.svg");
+}
+.dayplan__color-picker {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  box-shadow: 4px 4px 20px -10px #404040;
+  padding: 10px;
+  display: none;
+  top: 100%;
+  left: 100%;
+}
+.dayplan__color-picker.visible {
+  display: flex;
+}
+.dayplan__color-picker > button {
+  border: 1px solid #e4e4e4;
+}
+.dayplan__color-picker > button.red {
+  background-color: #ffccbe;
+}
+.dayplan__color-picker > button.blue {
+  background-color: #83c1e2;
+}
+.dayplan__color-picker > button.yellow {
+  background-color: #fff770;
+}
+.dayplan__color-picker > button + button {
+  margin-left: 10px;
 }

@@ -1,2 +1,28 @@
 box_shadow = 4px 4px 20px -10px #404040
 width_dayplan = 240px
+
+// COLORS
+soft_red = #ffccbe
+soft_blue = #83c1e2
+soft_yellow = #fff770
+
+light_gray = #e4e4e4
+
+soft_bg_colors()
+  &.red
+    background-color soft_red
+
+  &.blue
+    background-color soft_blue
+
+  &.yellow
+    background-color soft_yellow
+
+
+// SPACINGS
+default_spacing = 10px
+
+icon(path)
+  background-repeat no-repeat
+  background-position center
+  background-image url(path)

@@ -1,4 +1,4 @@
-module DayPlan exposing (DayPlan, Msg(..), Now, new, update, view)
+module DayPlan exposing (Model, Msg(..), Now, ViewModel, new, update, view)
 
 import CustomTime exposing (to5MinutesBasedDayTime)
 import Date exposing (Date)
@@ -15,32 +15,41 @@ import Util exposing (ID, Location, getNextId, onlyUpdateX)
 -- MODEL
 
 
-type alias DayPlan =
+type alias Model =
     { id : ID
     , title : String
-    , color : Color
+    , color : String
     , createdAt : Date
     , lastUsedAt : Date
     , todos : List ToDo
     , isPinnedToTop : Bool
-    , isEditingTitle : Bool
     }
 
 
-new : Time.Zone -> Time.Posix -> ID -> String -> DayPlan
+type alias ViewModel =
+    { dayPlan : Model
+    , isEditingTitle : Bool
+    , isColorPickerVisible : Bool
+    }
+
+
+new : Time.Zone -> Time.Posix -> ID -> String -> ViewModel
 new timeZone posix id title =
     let
         today =
             Date.fromPosix timeZone posix
     in
-    { id = id
-    , title = title
-    , color = Color.rgb 255 255 255
-    , createdAt = today
-    , lastUsedAt = today
-    , todos = []
-    , isPinnedToTop = False
+    { dayPlan =
+        { id = id
+        , title = title
+        , color = "yellow"
+        , createdAt = today
+        , lastUsedAt = today
+        , todos = []
+        , isPinnedToTop = False
+        }
     , isEditingTitle = False
+    , isColorPickerVisible = False
     }
 
 
@@ -54,17 +63,18 @@ type alias Now =
 
 type Msg
     = SetTitle String
-    | SetColor Color
+    | SetColor String
     | TogglePinning
     | SetLastUsedAt Date
     | AddToDo Time.Zone Now Location
     | UpdateToDo ToDo.Msg ToDo
     | RemoveToDo ToDo
     | ToggleIsEditingTitle
+    | ToggleColorPicker
 
 
-update : Msg -> DayPlan -> DayPlan
-update msg dayPlan =
+updateDayPlan : Msg -> Model -> Model
+updateDayPlan msg dayPlan =
     case msg of
         SetTitle string ->
             { dayPlan | title = string }
@@ -101,21 +111,34 @@ update msg dayPlan =
                 | todos = List.filter (\x -> x /= toDo) dayPlan.todos
             }
 
+        _ ->
+            dayPlan
+
+
+update : Msg -> ViewModel -> ViewModel
+update msg model =
+    case msg of
         ToggleIsEditingTitle ->
-            { dayPlan | isEditingTitle = not dayPlan.isEditingTitle }
+            { model | isEditingTitle = not model.isEditingTitle }
+
+        ToggleColorPicker ->
+            { model | isColorPickerVisible = not model.isColorPickerVisible }
+
+        _ ->
+            { model | dayPlan = updateDayPlan msg model.dayPlan }
 
 
 
 -- VIEW
 
 
-view : DayPlan -> Html Msg
-view dayplan =
-    Html.div [ Html.Attributes.class "dayplan" ]
-        [ if dayplan.isEditingTitle then
+view : ViewModel -> Html Msg
+view ({ dayPlan } as viewModel) =
+    Html.div [ Html.Attributes.class ("dayplan " ++ dayPlan.color) ]
+        [ if viewModel.isEditingTitle then
             Html.input
                 [ Html.Attributes.type_ "text"
-                , Html.Attributes.value dayplan.title
+                , Html.Attributes.value dayPlan.title
                 , Html.Events.onInput SetTitle
                 , Html.Events.onBlur ToggleIsEditingTitle
                 ]
@@ -124,17 +147,43 @@ view dayplan =
           else
             Html.span
                 [ onDoubleClick ToggleIsEditingTitle ]
-                [ Html.text dayplan.title
+                [ Html.text dayPlan.title
                 , Html.text " zuletzt benutzt:"
-                , Html.text <| Date.toIsoString dayplan.lastUsedAt
+                , Html.text <| Date.toIsoString dayPlan.lastUsedAt
                 ]
         , Html.button
             [ onClick TogglePinning
-            , if dayplan.isPinnedToTop then
+            , if dayPlan.isPinnedToTop then
                 Html.Attributes.class "pinned"
 
               else
                 Html.Attributes.class "unpinned"
             ]
             []
+        , Html.button
+            [ Html.Attributes.class "dayplan__color-picker-btn", onClick ToggleColorPicker ]
+            [ colorPicker viewModel.isColorPickerVisible dayPlan.color ]
         ]
+
+
+colorPicker : Bool -> String -> Html Msg
+colorPicker isVisible selectedColor =
+    Html.div
+        [ Html.Attributes.class
+            ("dayplan__color-picker "
+                ++ (if isVisible then
+                        "visible"
+
+                    else
+                        ""
+                   )
+            )
+        ]
+        ([ "red", "blue", "yellow" ] |> List.map toColorBtn)
+
+
+toColorBtn : String -> Html Msg
+toColorBtn colorClassName =
+    Html.button
+        [ Html.Attributes.class colorClassName, Html.Events.onClick <| SetColor colorClassName ]
+        []

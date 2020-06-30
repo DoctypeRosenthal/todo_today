@@ -1,8 +1,8 @@
-module Main exposing (..)
+module Main exposing (End, Model, Msg(..), Start, dayPlans, executeOnEnter, init, initModel, main, modalView, subscriptions, update, view, viewNextDayPlanTitle)
 
 import Browser
 import CustomTime exposing (FiveMinuteBasedTime, Hour)
-import DayPlan exposing (DayPlan)
+import DayPlan
 import Html exposing (Html, div)
 import Html.Attributes
 import Html.Events exposing (on, onClick, onInput)
@@ -31,9 +31,9 @@ type alias Model =
     , now : Time.Posix
     , zoom : ( Start, End )
     , workTime : ( Start, End )
-    , plans : List DayPlan
+    , plans : List DayPlan.ViewModel
     , nextPlanTitle : String
-    , currentPlan : Maybe DayPlan
+    , currentPlan : Maybe DayPlan.ViewModel
     }
 
 
@@ -67,13 +67,13 @@ type Msg
     | Zoom ( Start, End )
     | SetWorkTime ( Start, End )
     | CreatePlan String
-    | LoadPlan DayPlan
+    | LoadPlan DayPlan.ViewModel
     | CloseCurrentPlan
-    | RemovePlan DayPlan
+    | RemovePlan DayPlan.ViewModel
     | RemindUserToIncreaseSpareTime
     | PersistState
     | SetNextPlanTitle String
-    | UpdateDayPlan DayPlan DayPlan.Msg
+    | UpdateDayPlan DayPlan.ViewModel DayPlan.Msg
     | NoOp
 
 
@@ -99,7 +99,7 @@ update msg model =
             else
                 let
                     nextId =
-                        getNextId model.plans model.now
+                        getNextId (List.map .dayPlan model.plans) model.now
 
                     newPlan =
                         DayPlan.new model.timeZone model.now nextId title
@@ -107,8 +107,9 @@ update msg model =
                     ( nextModel, _ ) =
                         update (SetNextPlanTitle "") { model | plans = newPlan :: model.plans }
                 in
-                update (LoadPlan newPlan) nextModel
+                ( nextModel, Cmd.none )
 
+        --update (LoadPlan newPlan) nextModel
         LoadPlan dayPlan ->
             ( { model | currentPlan = Just dayPlan }, Cmd.none )
 
@@ -123,7 +124,7 @@ update msg model =
 
                     else
                         Just dayPlan
-                , plans = List.filter (\x -> x /= dayPlan) model.plans
+                , plans = List.filter (\x -> x.dayPlan /= dayPlan.dayPlan) model.plans
               }
             , Cmd.none
             )
@@ -163,10 +164,10 @@ view : Model -> Html Msg
 view model =
     let
         pinnedPlans =
-            List.filter .isPinnedToTop model.plans
+            List.filter (.dayPlan >> .isPinnedToTop) model.plans
 
         otherPlans =
-            List.filter (not << .isPinnedToTop) model.plans
+            List.filter (.dayPlan >> .isPinnedToTop >> not) model.plans
     in
     -- see https://keep.google.com/u/0/#home for design idea
     div []
@@ -189,13 +190,13 @@ view model =
         ]
 
 
-modalView : DayPlan -> Html Msg
-modalView plan =
+modalView : DayPlan.ViewModel -> Html Msg
+modalView { dayPlan } =
     Html.div [ Html.Attributes.class "editor" ]
         [ Html.div [ Html.Attributes.class "editor__background", onClick CloseCurrentPlan ] []
         , Html.div [ Html.Attributes.class "editor__inner" ]
             [ Html.div [ Html.Attributes.class "editor__top-bar" ]
-                [ Html.b [ Html.Attributes.class "editor__title" ] [ Html.text plan.title ]
+                [ Html.b [ Html.Attributes.class "editor__title" ] [ Html.text dayPlan.title ]
                 , Html.button [ Html.Attributes.class "editor__close", onClick CloseCurrentPlan ] [ Html.text "Schließen" ]
                 ]
             ]
@@ -226,7 +227,7 @@ executeOnEnter msg =
         (Decode.field "key" Decode.string)
 
 
-dayPlans : DayPlan.DayPlan -> Html Msg
+dayPlans : DayPlan.ViewModel -> Html Msg
 dayPlans dayPlan =
     Html.map (UpdateDayPlan dayPlan) (DayPlan.view dayPlan)
 

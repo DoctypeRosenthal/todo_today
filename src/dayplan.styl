@@ -5,12 +5,15 @@
   width width_dayplan
   box-shadow box_shadow
   margin 1em
-  padding 1em
-  border-radius: 1em
+  padding default_spacing
+
+  soft_bg_colors()
 
   button
     border-radius: 100%
     padding 1em
+    background-color transparent
+    border 1px solid gray
 
     &.pinned,
     &.unpinned
@@ -21,7 +24,32 @@
       width 32px
 
     &.pinned
-      background-image url(../public/pinned.svg)
+      icon("../public/pinned.svg")
 
     &.unpinned
-      background-image url(../public/unpinned.svg)
+      icon("../public/unpinned.svg")
+
+  &__color-picker-btn
+      position: relative
+      icon("../public/palette.svg")
+
+  &__color-picker
+    position absolute
+    background white
+    border 1px solid light_gray
+    box-shadow box_shadow
+    padding default_spacing
+    display none
+    top 100%
+    left 100%
+
+    &.visible
+      display flex
+
+    > button
+      border 1px solid light_gray
+
+      soft_bg_colors()
+
+      & + button
+        margin-left default_spacing
