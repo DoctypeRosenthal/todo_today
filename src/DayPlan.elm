@@ -1,4 +1,4 @@
-module DayPlan exposing (..)
+module DayPlan exposing (DayPlan, Msg(..), Now, new, update, view)
 
 import CustomTime exposing (to5MinutesBasedDayTime)
 import Date exposing (Date)
@@ -111,7 +111,7 @@ update msg dayPlan =
 
 view : DayPlan -> Html Msg
 view dayplan =
-    Html.div []
+    Html.div [ Html.Attributes.class "dayplan" ]
         [ if dayplan.isEditingTitle then
             Html.input
                 [ Html.Attributes.type_ "text"
@@ -138,13 +138,3 @@ view dayplan =
             ]
             []
         ]
-
-
-pinnedIco : Html.Attribute Msg
-pinnedIco =
-    Html.Attributes.style "background-image" "url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICA8cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDI0djI0SDB6Ii8+CiAgPHBhdGggZmlsbD0iIzAwMCIgZD0iTTE3IDRhMiAyIDAgMCAwLTItMkg5Yy0xLjEgMC0yIC45LTIgMnY3bC0yIDN2Mmg2djVsMSAxIDEtMXYtNWg2di0ybC0yLTNWNHoiLz4KPC9zdmc+Cg==)"
-
-
-unpinnedIco : Html.Attribute Msg
-unpinnedIco =
-    Html.Attributes.style "background-image" "url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICA8cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDI0djI0SDB6Ii8+CiAgPHBhdGggZmlsbD0iIzAwMCIgZD0iTTE3IDRhMiAyIDAgMCAwLTItMkg5Yy0xLjEgMC0yIC45LTIgMnY3bC0yIDN2Mmg2djVsMSAxIDEtMXYtNWg2di0ybC0yLTNWNHoiLz4KPC9zdmc+Cg==)"

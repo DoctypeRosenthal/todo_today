@@ -1,47 +1,19 @@
-/*
-  elm-hot creates an additional div wrapper around the app to make HMR possible.
-  This could break styling in development mode if you are using Elm UI.
-
-  More context in the issue:
-    https://github.com/halfzebra/create-elm-app/issues/320
-*/
 [data-elm-hot="true"] {
   height: inherit;
 }
-
 body {
-  font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   margin: 0;
   text-align: center;
   color: #293c4b;
 }
-
 h1 {
   font-size: 30px;
 }
-
 img {
   margin: 20px 0;
   max-width: 200px;
 }
-
-.pinned,
-.unpinned {
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 24px 24px;
-  height: 32px;
-  width: 32px;
-}
-
-.pinned {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICA8cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDI0djI0SDB6Ii8+CiAgPHBhdGggZmlsbD0iIzAwMCIgZD0iTTE3IDRhMiAyIDAgMCAwLTItMkg5Yy0xLjEgMC0yIC45LTIgMnY3bC0yIDN2Mmg2djVsMSAxIDEtMXYtNWg2di0ybC0yLTNWNHoiLz4KPC9zdmc+Cg==)
-}
-
-.unpinned {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICA8cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDI0djI0SDB6Ii8+CiAgPHBhdGggZmlsbD0iIzAwMCIgZD0iTTE3IDR2N2wyIDN2MmgtNnY1bC0xIDEtMS0xdi01SDV2LTJsMi0zVjRjMC0xLjEuOS0yIDItMmg2YzEuMTEgMCAyIC44OSAyIDJ6TTkgNHY3Ljc1TDcuNSAxNGg5TDE1IDExLjc1VjRIOXoiLz4KPC9zdmc+Cg==)
-}
-
 .editor {
   position: fixed;
   height: 100%;
@@ -61,19 +33,43 @@ img {
   right: 0;
   background: rgba(0,0,0,0.5);
 }
-
 .editor__inner {
   position: absolute;
   z-index: 2;
-  background: white;
+  background: #fff;
   border-radius: 12px;
   width: 800px;
   height: 90%;
   padding: 2em;
 }
-
 .editor__top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.dayplan {
+  position: absolute;
+  width: 240px;
+  box-shadow: 4px 4px 20px -10px #404040;
+  margin: 1em;
+  padding: 1em;
+  border-radius: 1em;
+}
+.dayplan button {
+  border-radius: 100%;
+  padding: 1em;
+}
+.dayplan button.pinned,
+.dayplan button.unpinned {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px 24px;
+  height: 32px;
+  width: 32px;
+}
+.dayplan button.pinned {
+  background-image: url("../public/pinned.svg");
+}
+.dayplan button.unpinned {
+  background-image: url("../public/unpinned.svg");
 }

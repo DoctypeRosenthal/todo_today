@@ -1,0 +1,27 @@
+@import "constants.styl"
+
+.dayplan
+  position absolute
+  width width_dayplan
+  box-shadow box_shadow
+  margin 1em
+  padding 1em
+  border-radius: 1em
+
+  button
+    border-radius: 100%
+    padding 1em
+
+    &.pinned,
+    &.unpinned
+      background-repeat no-repeat
+      background-position center center
+      background-size 24px 24px
+      height 32px
+      width 32px
+
+    &.pinned
+      background-image url(../public/pinned.svg)
+
+    &.unpinned
+      background-image url(../public/unpinned.svg)

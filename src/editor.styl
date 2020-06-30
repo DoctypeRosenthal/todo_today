@@ -1,0 +1,32 @@
+.editor
+  position fixed
+  height 100%
+  width 100%
+  top 0
+  right 0
+  display flex
+  align-items center
+  justify-content center
+
+  &__background
+    position absolute
+    z-index 1
+    height 100%
+    width 100%
+    top 0
+    right 0
+    background rgba(0,0,0,0.5)
+
+  &__inner
+    position absolute
+    z-index 2
+    background white
+    border-radius 12px
+    width 800px
+    height 90%
+    padding 2em
+
+  &__top-bar
+    display flex
+    justify-content space-between
+    align-items center
