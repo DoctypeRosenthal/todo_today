@@ -1,7 +1,7 @@
-module DayPlan exposing (Model, Msg(..), Now, ViewModel, new, update, view)
+module DayPlan exposing (DayPlan, Msg(..), Now, new, render, update)
 
-import CustomTime exposing (to5MinutesBasedDayTime)
 import Date exposing (Date)
+import FiveMinutBasedTime exposing (fromPosix)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events exposing (onClick, onDoubleClick, onInput)
@@ -25,31 +25,34 @@ type alias Model =
     }
 
 
-type alias ViewModel =
-    { dayPlan : Model
-    , isEditingTitle : Bool
+type alias View =
+    { isEditingTitle : Bool
     , isColorPickerVisible : Bool
     }
 
 
-new : Time.Zone -> Time.Posix -> ID -> String -> ViewModel
+type alias DayPlan =
+    ( View, Model )
+
+
+new : Time.Zone -> Time.Posix -> ID -> String -> DayPlan
 new timeZone posix id title =
     let
         today =
             Date.fromPosix timeZone posix
     in
-    { dayPlan =
-        { id = id
-        , title = title
-        , color = "yellow"
-        , createdAt = today
-        , lastUsedAt = today
-        , todos = []
-        , isPinnedToTop = False
-        }
-    , isEditingTitle = False
-    , isColorPickerVisible = False
-    }
+    ( { isEditingTitle = False
+      , isColorPickerVisible = False
+      }
+    , { id = id
+      , title = title
+      , color = "yellow"
+      , createdAt = today
+      , lastUsedAt = today
+      , todos = []
+      , isPinnedToTop = False
+      }
+    )
 
 
 
@@ -72,85 +75,90 @@ type Msg
     | ToggleColorPicker
 
 
-updateDayPlan : Msg -> Model -> Model
-updateDayPlan msg dayPlan =
+updateModel : Msg -> Model -> Model
+updateModel msg model =
     case msg of
         SetTitle string ->
-            { dayPlan | title = string }
+            { model | title = string }
 
         SetColor color ->
-            { dayPlan | color = color }
+            { model | color = color }
 
         TogglePinning ->
-            { dayPlan | isPinnedToTop = not dayPlan.isPinnedToTop }
+            { model | isPinnedToTop = not model.isPinnedToTop }
 
         SetLastUsedAt date ->
-            { dayPlan | lastUsedAt = date }
+            { model | lastUsedAt = date }
 
         AddToDo timeZone now location ->
             let
                 id =
-                    getNextId dayPlan.todos now
+                    getNextId model.todos now
 
                 startTime =
-                    to5MinutesBasedDayTime timeZone now
+                    fromPosix timeZone now
 
                 newTodo =
                     ToDo.new id startTime location
             in
-            { dayPlan | todos = newTodo :: dayPlan.todos }
+            { model | todos = newTodo :: model.todos }
 
         UpdateToDo toDo toDoMsg ->
-            { dayPlan
-                | todos = onlyUpdateX toDo (ToDo.update toDoMsg) dayPlan.todos
+            { model
+                | todos = onlyUpdateX toDo (ToDo.update toDoMsg) model.todos
             }
 
         RemoveToDo toDo ->
-            { dayPlan
-                | todos = List.filter (\x -> x /= toDo) dayPlan.todos
+            { model
+                | todos = List.filter (\x -> x /= toDo) model.todos
             }
 
         _ ->
-            dayPlan
+            model
 
 
-update : Msg -> ViewModel -> ViewModel
-update msg model =
+updateView : Msg -> View -> View
+updateView msg view =
     case msg of
         ToggleIsEditingTitle ->
-            { model | isEditingTitle = not model.isEditingTitle }
+            { view | isEditingTitle = not view.isEditingTitle }
 
         ToggleColorPicker ->
-            { model | isColorPickerVisible = not model.isColorPickerVisible }
+            { view | isColorPickerVisible = not view.isColorPickerVisible }
 
         _ ->
-            { model | dayPlan = updateDayPlan msg model.dayPlan }
+            view
+
+
+update : Msg -> DayPlan -> DayPlan
+update msg ( view, model ) =
+    ( updateView msg view, updateModel msg model )
 
 
 
 -- VIEW
 
 
-view : ViewModel -> Html Msg
-view ({ dayPlan } as viewModel) =
-    Html.div [ Html.Attributes.class ("dayplan " ++ dayPlan.color) ]
+render : DayPlan -> Html Msg
+render ( view, model ) =
+    Html.div [ Html.Attributes.class ("dayplan " ++ model.color) ]
         [ Html.div [ Html.Attributes.class "dayplan__header" ]
             [ Html.h3
                 [ Html.Attributes.class "dayplan__title", onDoubleClick ToggleIsEditingTitle ]
-                [ if viewModel.isEditingTitle then
+                [ if view.isEditingTitle then
                     Html.input
                         [ Html.Attributes.type_ "text"
-                        , Html.Attributes.value dayPlan.title
+                        , Html.Attributes.value model.title
                         , Html.Events.onInput SetTitle
                         , Html.Events.onBlur ToggleIsEditingTitle
                         ]
                         []
 
                   else
-                    Html.text dayPlan.title
+                    Html.text model.title
                 , Html.button
                     [ onClick TogglePinning
-                    , if dayPlan.isPinnedToTop then
+                    , if model.isPinnedToTop then
                         Html.Attributes.class "pinned"
 
                       else
@@ -160,22 +168,22 @@ view ({ dayPlan } as viewModel) =
                 ]
             , Html.div [ Html.Attributes.class "dayplan__subtitle" ]
                 [ Html.text " zuletzt benutzt: "
-                , Html.text <| Date.format "dd.M.y" dayPlan.lastUsedAt
+                , Html.text <| Date.format "dd.M.y" model.lastUsedAt
                 ]
             ]
         , Html.div
             [ Html.Attributes.class "dayplan__main" ]
-            (List.map todosView dayPlan.todos)
+            (List.map renderTodos model.todos)
         , Html.div [ Html.Attributes.class "dayplan__footer" ]
             [ Html.button
                 [ Html.Attributes.class "dayplan__color-picker-btn", onClick ToggleColorPicker ]
-                [ colorPicker viewModel.isColorPickerVisible ]
+                [ colorPicker view.isColorPickerVisible ]
             ]
         ]
 
 
-todosView : ToDo -> Html Msg
-todosView todo =
+renderTodos : ToDo -> Html Msg
+renderTodos todo =
     Html.map (UpdateToDo todo) (ToDo.view todo)
 
 

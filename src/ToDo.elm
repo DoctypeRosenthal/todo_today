@@ -1,7 +1,7 @@
 module ToDo exposing (End, Msg(..), Start, ToDo, new, update, view)
 
-import CustomTime exposing (FiveMinuteBasedTime, fiveMinutes)
 import Element as Color exposing (Color)
+import FiveMinutBasedTime exposing (FiveMinuteBasedTime, fiveMinutes)
 import Html exposing (Html)
 import Util exposing (ID, Location)
 
@@ -33,7 +33,7 @@ new id startTime location =
     { id = id
     , title = "New ToDo"
     , isDone = False
-    , interval = ( startTime, CustomTime.add startTime fiveMinutes )
+    , interval = ( startTime, FiveMinutBasedTime.add startTime fiveMinutes )
     , location = location
     , color = Color.rgb 255 255 255
     }
@@ -67,8 +67,8 @@ update msg todo =
                     todo.interval
 
                 nextInterval =
-                    if CustomTime.ge nextStart end then
-                        ( nextStart, CustomTime.add nextStart fiveMinutes )
+                    if FiveMinutBasedTime.ge nextStart end then
+                        ( nextStart, FiveMinutBasedTime.add nextStart fiveMinutes )
 
                     else
                         ( nextStart, end )
@@ -80,7 +80,7 @@ update msg todo =
                 ( start, end ) =
                     todo.interval
             in
-            if CustomTime.ge start end then
+            if FiveMinutBasedTime.ge start end then
                 -- ending cannot be earlier than start
                 todo
 

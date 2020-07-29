@@ -1,4 +1,4 @@
-module CustomTime exposing (..)
+module FiveMinutBasedTime exposing (..)
 
 import Time
 
@@ -30,8 +30,8 @@ fiveMinutes =
     FiveMinuteBasedTime 5
 
 
-to5MinutesBasedDayTime : Time.Zone -> Time.Posix -> FiveMinuteBasedTime
-to5MinutesBasedDayTime zone posix =
+fromPosix : Time.Zone -> Time.Posix -> FiveMinuteBasedTime
+fromPosix zone posix =
     let
         nowInMinutes =
             minutesSinceDayStart zone posix
