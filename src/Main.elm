@@ -9,6 +9,7 @@ import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 import Task
 import Time exposing (Month(..), Posix, Zone, utc)
+import ToDo
 import Util exposing (Location, getNextId, location, onlyUpdateX)
 
 
@@ -100,8 +101,14 @@ update msg model =
                     newPlan =
                         DayPlan.new model.timeZone model.now nextId title
 
+                    newToDo =
+                        ToDo.new nextId (FiveMinutBasedTime.fromPosix model.timeZone model.now) model.home
+
+                    planWithTodo =
+                        DayPlan.update (DayPlan.AddToDo newToDo) newPlan
+
                     nextModel =
-                        { model | plans = newPlan :: model.plans }
+                        { model | plans = planWithTodo :: model.plans }
                 in
                 update (SetNewPlanInputValue "") nextModel
 
@@ -155,7 +162,7 @@ view model =
     in
     -- see https://keep.google.com/u/0/#home for design idea
     div []
-        [ Html.h1 [] [ Html.text "ToDos" ]
+        [ Html.h1 [] [ Html.text "ToDo today" ]
         , viewNextDayPlanTitle model.nextPlanTitle
         , Html.div []
             (Html.h5 [] [ Html.text "Pinned" ]

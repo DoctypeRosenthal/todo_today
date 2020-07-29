@@ -70,7 +70,7 @@ type Msg
     | SetColor String
     | TogglePinning
     | SetLastUsedAt Date
-    | AddToDo Time.Zone Now Location
+    | AddToDo ToDo
     | UpdateToDo ToDo ToDo.Msg
     | RemoveToDo ToDo
     | ToggleIsEditingTitle
@@ -94,17 +94,7 @@ updateModel msg model =
         SetLastUsedAt date ->
             { model | lastUsedAt = date }
 
-        AddToDo timeZone now location ->
-            let
-                id =
-                    getNextId model.todos now
-
-                startTime =
-                    fromPosix timeZone now
-
-                newTodo =
-                    ToDo.new id startTime location
-            in
+        AddToDo newTodo ->
             { model | todos = newTodo :: model.todos }
 
         UpdateToDo toDo toDoMsg ->
