@@ -1,4 +1,4 @@
-module ToDo exposing (..)
+module ToDo exposing (End, Msg(..), Start, ToDo, new, update, view)
 
 import CustomTime exposing (FiveMinuteBasedTime, fiveMinutes)
 import Element as Color exposing (Color)
@@ -100,4 +100,4 @@ update msg todo =
 
 view : ToDo -> Html Msg
 view toDo =
-    Html.div [] [ Html.text "a todo" ]
+    Html.div [] [ Html.text "a default todo" ]
