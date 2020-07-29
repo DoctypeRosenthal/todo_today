@@ -1,9 +1,10 @@
 @import "styles/constants.styl"
 
-icon(path)
+icon(name)
+  interpolated = "../public/" + name + ".svg"
   background-repeat no-repeat
   background-position center
-  background-image url(path)
+  background-image url(interpolated)
 
 soft_bg_colors()
   &.red

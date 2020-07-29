@@ -27,39 +27,6 @@ img {
 :focus {
   outline: none;
 }
-.editor {
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.editor__background {
-  position: absolute;
-  z-index: 1;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  right: 0;
-  background: rgba(0,0,0,0.5);
-}
-.editor__inner {
-  position: absolute;
-  z-index: 2;
-  background: #fff;
-  border-radius: 12px;
-  width: 800px;
-  height: 90%;
-  padding: 2em;
-}
-.editor__top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 .dayplan {
   position: relative;
   width: 240px;
@@ -115,6 +82,18 @@ img {
   justify-content: space-between;
   align-items: center;
 }
+.dayplan__title > input {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  border-width: 1px;
+  border-style: none none solid;
+  background: none;
+  display: inline-block;
+  padding: 5px;
+  margin-left: -5px;
+}
 .dayplan__subtitle {
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -159,4 +138,42 @@ img {
 }
 .dayplan__color-picker > button + button {
   margin-left: 10px;
+}
+.dayplan__delete-btn {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../public/trash.svg");
+}
+.editor {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.editor__background {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  background: rgba(0,0,0,0.5);
+}
+.editor__inner {
+  position: absolute;
+  z-index: 2;
+  background: #fff;
+  border-radius: 12px;
+  width: 800px;
+  height: 90%;
+  padding: 2em;
+}
+.editor__top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
