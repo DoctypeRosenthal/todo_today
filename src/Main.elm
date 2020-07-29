@@ -68,7 +68,7 @@ type Msg
     | RemovePlan DayPlan.DayPlan
     | RemindUserToIncreaseSpareTime
     | PersistState
-    | SetNextPlanTitle String
+    | SetNewPlanInputValue String
     | UpdateDayPlan DayPlan.DayPlan DayPlan.Msg -- Reihenfolge so besser wegen message mapping via partial application
     | NoOp
 
@@ -100,10 +100,10 @@ update msg model =
                     newPlan =
                         DayPlan.new model.timeZone model.now nextId title
 
-                    ( nextModel, _ ) =
-                        update (SetNextPlanTitle "") { model | plans = newPlan :: model.plans }
+                    nextModel =
+                        { model | plans = newPlan :: model.plans }
                 in
-                ( nextModel, Cmd.none )
+                update (SetNewPlanInputValue "") nextModel
 
         RemovePlan dayPlan ->
             ( { model | plans = List.filter ((/=) dayPlan) model.plans }
@@ -133,7 +133,7 @@ update msg model =
                     , Cmd.none
                     )
 
-        SetNextPlanTitle title ->
+        SetNewPlanInputValue title ->
             ( { model | nextPlanTitle = title }, Cmd.none )
 
         NoOp ->
@@ -173,7 +173,7 @@ viewNextDayPlanTitle title =
     Html.input
         [ Html.Attributes.placeholder "New Dayplan..."
         , Html.Attributes.value title
-        , onInput SetNextPlanTitle
+        , onInput SetNewPlanInputValue
         , on "keydown" (executeOnEnter (CreatePlan title))
         ]
         []
