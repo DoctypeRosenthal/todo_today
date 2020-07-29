@@ -24,6 +24,9 @@ img {
   margin: 20px 0;
   max-width: 200px;
 }
+:focus {
+  outline: none;
+}
 .editor {
   position: fixed;
   height: 100%;
@@ -124,8 +127,12 @@ img {
   background-position: center;
   background-image: url("../public/palette.svg");
 }
+.dayplan__color-picker-btn:focus {
+  background-color: rgba(0,0,0,0.2);
+}
 .dayplan__color-picker {
   position: absolute;
+  z-index: 1;
   background: #fff;
   border: 1px solid #e4e4e4;
   box-shadow: 4px 10px 20px -10px #777;
