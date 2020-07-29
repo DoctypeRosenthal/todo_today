@@ -28,6 +28,7 @@ type alias Model =
 type alias View =
     { isEditingTitle : Bool
     , isColorPickerVisible : Bool
+    , isEditing : Bool
     }
 
 
@@ -43,6 +44,7 @@ new timeZone posix id title =
     in
     ( { isEditingTitle = False
       , isColorPickerVisible = False
+      , isEditing = False
       }
     , { id = id
       , title = title
@@ -73,6 +75,8 @@ type Msg
     | RemoveToDo ToDo
     | ToggleIsEditingTitle
     | ToggleColorPicker
+    | ToggleEditing Bool
+    | RemoveMe
 
 
 updateModel : Msg -> Model -> Model
@@ -126,6 +130,9 @@ updateView msg view =
         ToggleColorPicker ->
             { view | isColorPickerVisible = not view.isColorPickerVisible }
 
+        ToggleEditing isEditing ->
+            { view | isEditing = isEditing }
+
         _ ->
             view
 
@@ -140,32 +147,34 @@ update msg ( view, model ) =
 
 
 render : DayPlan -> Html Msg
-render ( view, model ) =
+render (( view, model ) as plan) =
     Html.div [ Html.Attributes.class ("dayplan " ++ model.color) ]
         [ Html.div [ Html.Attributes.class "dayplan__header" ]
             [ Html.h3
                 [ Html.Attributes.class "dayplan__title", onDoubleClick ToggleIsEditingTitle ]
-                [ if view.isEditingTitle then
-                    Html.input
+                (if view.isEditingTitle then
+                    [ Html.input
                         [ Html.Attributes.type_ "text"
                         , Html.Attributes.value model.title
                         , Html.Events.onInput SetTitle
                         , Html.Events.onBlur ToggleIsEditingTitle
                         ]
                         []
-
-                  else
-                    Html.text model.title
-                , Html.button
-                    [ onClick TogglePinning
-                    , if model.isPinnedToTop then
-                        Html.Attributes.class "pinned"
-
-                      else
-                        Html.Attributes.class "unpinned"
                     ]
-                    []
-                ]
+
+                 else
+                    [ Html.text model.title
+                    , Html.button
+                        [ onClick TogglePinning
+                        , if model.isPinnedToTop then
+                            Html.Attributes.class "pinned"
+
+                          else
+                            Html.Attributes.class "unpinned"
+                        ]
+                        []
+                    ]
+                )
             , Html.div [ Html.Attributes.class "dayplan__subtitle" ]
                 [ Html.text " zuletzt benutzt: "
                 , Html.text <| Date.format "dd.M.y" model.lastUsedAt
@@ -178,6 +187,9 @@ render ( view, model ) =
             [ Html.button
                 [ Html.Attributes.class "dayplan__color-picker-btn", onClick ToggleColorPicker ]
                 [ colorPicker view.isColorPickerVisible ]
+            , Html.button
+                [ Html.Attributes.class "dayplan__delete-btn", onClick RemoveMe ]
+                []
             ]
         ]
 

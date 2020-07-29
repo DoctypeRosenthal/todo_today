@@ -1,4 +1,4 @@
-module Main exposing (End, Model, Msg(..), Start, dayPlansView, executeOnEnter, init, initModel, main, modalView, subscriptions, update, view, viewNextDayPlanTitle)
+module Main exposing (End, Model, Msg(..), Start, dayPlansView, executeOnEnter, init, initModel, main, subscriptions, update, view, viewNextDayPlanTitle)
 
 import Browser
 import DayPlan
@@ -33,7 +33,6 @@ type alias Model =
     , workTime : ( Start, End )
     , plans : List DayPlan.DayPlan
     , nextPlanTitle : String
-    , currentPlan : Maybe DayPlan.DayPlan
     }
 
 
@@ -46,7 +45,6 @@ initModel =
     , zoom = ( 8, 23 )
     , workTime = ( 8, 22 )
     , plans = []
-    , currentPlan = Nothing
     , nextPlanTitle = ""
     }
 
@@ -67,8 +65,6 @@ type Msg
     | Zoom ( Start, End )
     | SetWorkTime ( Start, End )
     | CreatePlan String
-    | LoadPlan DayPlan.DayPlan
-    | CloseCurrentPlan
     | RemovePlan DayPlan.DayPlan
     | RemindUserToIncreaseSpareTime
     | PersistState
@@ -109,23 +105,8 @@ update msg model =
                 in
                 ( nextModel, Cmd.none )
 
-        --update (LoadPlan newPlan) nextModel
-        LoadPlan dayPlan ->
-            ( { model | currentPlan = Just dayPlan }, Cmd.none )
-
-        CloseCurrentPlan ->
-            ( { model | currentPlan = Nothing }, Cmd.none )
-
         RemovePlan dayPlan ->
-            ( { model
-                | currentPlan =
-                    if model.currentPlan == Just dayPlan then
-                        Nothing
-
-                    else
-                        Just dayPlan
-                , plans = List.filter ((/=) dayPlan) model.plans
-              }
+            ( { model | plans = List.filter ((/=) dayPlan) model.plans }
             , Cmd.none
             )
 
@@ -136,18 +117,21 @@ update msg model =
             ( model, Cmd.none )
 
         AdjustTimeZone zone ->
-            ( { model
-                | timeZone = zone
-              }
+            ( { model | timeZone = zone }
             , Cmd.none
             )
 
         UpdateDayPlan dayPlan planMsg ->
-            ( { model
-                | plans = onlyUpdateX dayPlan (DayPlan.update planMsg) model.plans
-              }
-            , Cmd.none
-            )
+            case planMsg of
+                DayPlan.RemoveMe ->
+                    update (RemovePlan dayPlan) model
+
+                _ ->
+                    ( { model
+                        | plans = onlyUpdateX dayPlan (DayPlan.update planMsg) model.plans
+                      }
+                    , Cmd.none
+                    )
 
         SetNextPlanTitle title ->
             ( { model | nextPlanTitle = title }, Cmd.none )
@@ -181,25 +165,6 @@ view model =
             (Html.h5 [] [ Html.text "Others" ]
                 :: List.map dayPlansView otherPlans
             )
-        , case model.currentPlan of
-            Just plan ->
-                modalView plan
-
-            Nothing ->
-                Html.text ""
-        ]
-
-
-modalView : DayPlan.DayPlan -> Html Msg
-modalView ( _, model ) =
-    Html.div [ Html.Attributes.class "editor" ]
-        [ Html.div [ Html.Attributes.class "editor__background", onClick CloseCurrentPlan ] []
-        , Html.div [ Html.Attributes.class "editor__inner" ]
-            [ Html.div [ Html.Attributes.class "editor__top-bar" ]
-                [ Html.b [ Html.Attributes.class "editor__title" ] [ Html.text model.title ]
-                , Html.button [ Html.Attributes.class "editor__close", onClick CloseCurrentPlan ] [ Html.text "Schließen" ]
-                ]
-            ]
         ]
 
 
