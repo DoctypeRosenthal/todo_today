@@ -1,11 +1,11 @@
-module DayPlan exposing (DayPlan, Msg(..), Now, new, render, update)
+module DayPlan exposing (DayPlan, Msg(..), Now, default, new, render, renderEditor, update)
 
 import Date exposing (Date)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events exposing (onClick, onDoubleClick, onInput)
 import Tick exposing (fromPosix)
-import Time
+import Time exposing (Month(..))
 import ToDo exposing (ToDo)
 import Util exposing (ID, Location, getNextId, onlyUpdateX)
 
@@ -51,6 +51,23 @@ new timeZone posix id title =
       , color = "yellow"
       , createdAt = today
       , lastUsedAt = today
+      , todos = []
+      , isPinnedToTop = False
+      }
+    )
+
+
+default : DayPlan
+default =
+    ( { isEditingTitle = False
+      , isColorPickerVisible = False
+      , isEditing = True
+      }
+    , { id = 0
+      , title = "Test Dayplan"
+      , color = "yellow"
+      , createdAt = Date.fromCalendarDate 18 Sep 20
+      , lastUsedAt = Date.fromCalendarDate 18 Sep 20
       , todos = []
       , isPinnedToTop = False
       }
@@ -138,6 +155,15 @@ update msg ( view, model ) =
 
 render : DayPlan -> Html Msg
 render (( view, model ) as plan) =
+    if view.isEditing then
+        renderEditor plan
+
+    else
+        renderPreview plan
+
+
+renderPreview : DayPlan -> Html Msg
+renderPreview ( view, model ) =
     Html.div [ Html.Attributes.class ("dayplan " ++ model.color) ]
         [ Html.div [ Html.Attributes.class "dayplan__header" ]
             [ Html.h3
@@ -180,6 +206,23 @@ render (( view, model ) as plan) =
             , Html.button
                 [ Html.Attributes.class "dayplan__delete-btn", onClick RemoveMe ]
                 []
+            ]
+        ]
+
+
+
+-- TODO: Maybe this can be integrated into the main render function?
+
+
+renderEditor : DayPlan -> Html Msg
+renderEditor ( view, model ) =
+    Html.div [ Html.Attributes.class "editor" ]
+        [ Html.div [ Html.Attributes.class "editor__background" ] []
+        , Html.div [ Html.Attributes.class "editor__inner" ]
+            [ Html.div [ Html.Attributes.class "editor__top-bar" ]
+                [ Html.b [ Html.Attributes.class "editor__title" ] [ Html.text model.title ]
+                , Html.button [ Html.Attributes.class "editor__close" ] [ Html.text "Schließen" ]
+                ]
             ]
         ]
 

@@ -1,7 +1,7 @@
 module Main exposing (End, Model, Msg(..), Start, dayPlansView, executeOnEnter, init, initModel, main, subscriptions, update, view, viewNextDayPlanTitle)
 
 import Browser
-import DayPlan
+import DayPlan exposing (renderEditor)
 import Html exposing (Html, div)
 import Html.Attributes
 import Html.Events exposing (on, onClick, onInput)
@@ -45,7 +45,7 @@ initModel =
     , now = Time.millisToPosix 0
     , zoom = ( 8, 23 )
     , workTime = ( 8, 22 )
-    , plans = []
+    , plans = [ DayPlan.default ]
     , nextPlanTitle = ""
     }
 
