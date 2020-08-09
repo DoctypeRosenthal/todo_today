@@ -2,12 +2,12 @@ module Main exposing (End, Model, Msg(..), Start, dayPlansView, executeOnEnter, 
 
 import Browser
 import DayPlan
-import FiveMinutBasedTime exposing (FiveMinuteBasedTime, Hour)
 import Html exposing (Html, div)
 import Html.Attributes
 import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 import Task
+import Tick exposing (Hour, Tick)
 import Time exposing (Month(..), Posix, Zone, utc)
 import ToDo
 import Util exposing (Location, getNextId, location, onlyUpdateX)
@@ -102,7 +102,7 @@ update msg model =
                         DayPlan.new model.timeZone model.now nextId title
 
                     newToDo =
-                        ToDo.new nextId (FiveMinutBasedTime.fromPosix model.timeZone model.now) model.home
+                        ToDo.new nextId (Tick.fromPosix model.timeZone model.now) model.home
 
                     planWithTodo =
                         DayPlan.update (DayPlan.AddToDo newToDo) newPlan

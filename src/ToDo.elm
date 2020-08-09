@@ -1,8 +1,8 @@
 module ToDo exposing (End, Msg(..), Start, ToDo, new, update, view)
 
 import Element as Color exposing (Color)
-import FiveMinutBasedTime exposing (FiveMinuteBasedTime, fiveMinutes)
 import Html exposing (Html)
+import Tick as Time exposing (Tick, oneTick)
 import Util exposing (ID, Location)
 
 
@@ -11,11 +11,11 @@ import Util exposing (ID, Location)
 
 
 type alias Start =
-    FiveMinuteBasedTime
+    Tick
 
 
 type alias End =
-    FiveMinuteBasedTime
+    Tick
 
 
 type alias ToDo =
@@ -28,12 +28,12 @@ type alias ToDo =
     }
 
 
-new : ID -> FiveMinuteBasedTime -> Location -> ToDo
+new : ID -> Tick -> Location -> ToDo
 new id startTime location =
     { id = id
     , title = "New ToDo"
     , isDone = False
-    , interval = ( startTime, FiveMinutBasedTime.add startTime fiveMinutes )
+    , interval = ( startTime, Time.add startTime <| Time.fromInt 10 )
     , location = location
     , color = Color.rgb 255 255 255
     }
@@ -46,8 +46,8 @@ new id startTime location =
 type Msg
     = SetTitle String
     | ToggleIsDone Bool
-    | SetStartTime FiveMinuteBasedTime
-    | SetEndTime FiveMinuteBasedTime
+    | SetStartTime Tick
+    | SetEndTime Tick
     | SetLocation Location
     | SetColor Color
 
@@ -67,8 +67,8 @@ update msg todo =
                     todo.interval
 
                 nextInterval =
-                    if FiveMinutBasedTime.ge nextStart end then
-                        ( nextStart, FiveMinutBasedTime.add nextStart fiveMinutes )
+                    if Time.ge nextStart end then
+                        ( nextStart, Time.add nextStart oneTick )
 
                     else
                         ( nextStart, end )
@@ -80,7 +80,7 @@ update msg todo =
                 ( start, end ) =
                     todo.interval
             in
-            if FiveMinutBasedTime.ge start end then
+            if Time.ge start end then
                 -- ending cannot be earlier than start
                 todo
 

@@ -1,10 +1,10 @@
 module DayPlan exposing (DayPlan, Msg(..), Now, new, render, update)
 
 import Date exposing (Date)
-import FiveMinutBasedTime exposing (fromPosix)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events exposing (onClick, onDoubleClick, onInput)
+import Tick exposing (fromPosix)
 import Time
 import ToDo exposing (ToDo)
 import Util exposing (ID, Location, getNextId, onlyUpdateX)
