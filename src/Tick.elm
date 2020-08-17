@@ -1,14 +1,11 @@
 module Tick exposing (..)
 
+import CustomTime as Time exposing (Minute)
+import Html exposing (Html, div)
+import Html.Attributes exposing (class, style)
+import Html.Events exposing (onClick)
+import Html.Events.Extra.Pointer as Pointer exposing (Event)
 import Time
-
-
-type alias Hour =
-    Int
-
-
-type alias Minute =
-    Int
 
 
 
@@ -29,6 +26,21 @@ ge (Tick a) (Tick b) =
     a >= b
 
 
+le : Tick -> Tick -> Bool
+le (Tick a) (Tick b) =
+    a <= b
+
+
+within : Tick -> Tick -> Tick -> Bool
+within lower upper x =
+    le lower x && ge x upper
+
+
+toString : Tick -> String
+toString (Tick t) =
+    String.fromInt t
+
+
 base : Int
 base =
     5
@@ -44,8 +56,8 @@ fromInt =
     Tick << multipleOfBase
 
 
-oneTick : Tick
-oneTick =
+single : Tick
+single =
     Tick base
 
 
@@ -66,6 +78,88 @@ fromPosix zone posix =
             nowInMinutes - mod + base
 
 
+toInt : Tick -> Int
+toInt (Tick int) =
+    int
+
+
+float : Tick -> Float
+float =
+    toFloat << toInt
+
+
 minutesSinceDayStart : Time.Zone -> Time.Posix -> Minute
 minutesSinceDayStart zone posix =
     Time.toHour zone posix * 60 + Time.toMinute zone posix
+
+
+minutesPerHour =
+    60
+
+
+dayStartsAt =
+    8
+
+
+wokeHours =
+    15
+
+
+ticksPerHour =
+    12
+
+
+numberOfTicks =
+    wokeHours * ticksPerHour + 1
+
+
+fullDay =
+    List.range 0 numberOfTicks
+        |> List.map ((*) 5 >> fromInt)
+
+
+
+-- VIEW
+
+
+render : (Maybe Tick -> msg) -> Tick -> Float -> Html msg
+render onHover tick scalar =
+    let
+        myTime =
+            float tick / minutesPerHour + dayStartsAt
+
+        isFullHour =
+            (toFloat << round) myTime == myTime
+
+        tickNumberView =
+            if not isFullHour then
+                []
+
+            else
+                [ div [ class "tick__number" ] [ Html.text <| String.fromFloat myTime ]
+                ]
+
+        tickLineCssValue =
+            String.fromFloat
+                (if isFullHour then
+                    1
+
+                 else
+                    scalar
+                )
+
+        tickLine =
+            div
+                [ class "tick__line"
+                , style "opacity" tickLineCssValue
+                , style "transform" <| "scaleX(" ++ tickLineCssValue ++ ")"
+                ]
+                []
+    in
+    div
+        [ Html.Attributes.class "tick"
+        , Pointer.onOver (always (Just tick) >> onHover)
+
+        --, onClick ClickOnActiveTick
+        ]
+        (tickNumberView ++ [ tickLine ])

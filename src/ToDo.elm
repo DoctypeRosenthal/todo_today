@@ -1,8 +1,9 @@
-module ToDo exposing (End, Msg(..), Start, ToDo, new, update, view)
+module ToDo exposing (End, Msg(..), Start, ToDo, default, new, render, renderPreview, update)
 
 import Element as Color exposing (Color)
-import Html exposing (Html)
-import Tick as Time exposing (Tick, oneTick)
+import Html exposing (Html, div)
+import Html.Attributes exposing (classList, style)
+import Tick exposing (Tick)
 import Util exposing (ID, Location)
 
 
@@ -29,12 +30,23 @@ type alias ToDo =
 
 
 new : ID -> Tick -> Location -> ToDo
-new id startTime location =
+new id startTick location =
     { id = id
     , title = "New ToDo"
     , isDone = False
-    , interval = ( startTime, Time.add startTime <| Time.fromInt 10 )
+    , interval = ( startTick, Tick.add startTick <| Tick.fromInt 10 )
     , location = location
+    , color = Color.rgb 255 255 255
+    }
+
+
+default : ToDo
+default =
+    { id = 0
+    , title = "New ToDo"
+    , isDone = False
+    , interval = ( Tick.fromInt <| 12 * 12, Tick.fromInt <| 13 * 12 )
+    , location = Util.location "Köln"
     , color = Color.rgb 255 255 255
     }
 
@@ -67,8 +79,8 @@ update msg todo =
                     todo.interval
 
                 nextInterval =
-                    if Time.ge nextStart end then
-                        ( nextStart, Time.add nextStart oneTick )
+                    if Tick.ge nextStart end then
+                        ( nextStart, Tick.add nextStart Tick.single )
 
                     else
                         ( nextStart, end )
@@ -80,7 +92,7 @@ update msg todo =
                 ( start, end ) =
                     todo.interval
             in
-            if Time.ge start end then
+            if Tick.ge start end then
                 -- ending cannot be earlier than start
                 todo
 
@@ -98,6 +110,28 @@ update msg todo =
 -- VIEW
 
 
-view : ToDo -> Html Msg
-view toDo =
+renderPreview : ToDo -> Html Msg
+renderPreview toDo =
     Html.div [] [ Html.text "a default todo" ]
+
+
+render : Maybe Tick -> ToDo -> Html Msg
+render maybeActiveTick { interval, color, title } =
+    let
+        ( startTick, endTick ) =
+            interval
+
+        isHovered =
+            case maybeActiveTick of
+                Just activeTick ->
+                    Tick.within startTick endTick activeTick
+
+                Nothing ->
+                    False
+    in
+    div
+        [ classList [ ( "todo", True ), ( "todo--hover", isHovered ) ]
+        , style "grid-row" (Tick.toString startTick ++ " / " ++ Tick.toString endTick)
+        , style "background" <| "blue"
+        ]
+        [ Html.text title ]

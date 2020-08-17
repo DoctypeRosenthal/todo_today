@@ -1,13 +1,14 @@
 module Main exposing (End, Model, Msg(..), Start, dayPlansView, executeOnEnter, init, initModel, main, subscriptions, update, view, viewNextDayPlanTitle)
 
 import Browser
+import CustomTime as Time exposing (Hour)
 import DayPlan exposing (renderEditor)
 import Html exposing (Html, div)
 import Html.Attributes
 import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 import Task
-import Tick exposing (Hour, Tick)
+import Tick
 import Time exposing (Month(..), Posix, Zone, utc)
 import ToDo
 import Util exposing (Location, getNextId, location, onlyUpdateX)
