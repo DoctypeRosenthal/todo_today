@@ -224,29 +224,8 @@ img {
   background: #727272;
   width: 1.3rem;
 }
-.timeline__filter {
-  position: relative;
-  height: 100%;
-}
-.timeline__filter::before,
-.timeline__filter::after {
-  position: absolute;
-  content: "";
-  height: 10%;
-  width: 100%;
-  left: 0;
-  z-index: 1;
-}
-.timeline__filter::before {
-  top: 0;
-  background: linear-gradient(#fff 10%, rgba(0,0,0,0) 100%);
-}
-.timeline__filter::after {
-  bottom: 0;
-  background: linear-gradient(rgba(0,0,0,0) 0%, #fff 90%);
-}
 .timeline {
-  flex-grow: 1;
+  height: 100%;
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
@@ -260,9 +239,10 @@ img {
 }
 .timeline__separator {
   width: 1px;
-  background: #808080;
-  transform: scaleY(1.3);
+  background: linear-gradient(#fff 5%, #808080 10%, #808080 90%, #fff 95%);
+  transform: scaleY(1.25);
   transform-origin: center;
+  position: relative;
 }
 .todo {
   color: #fff;
