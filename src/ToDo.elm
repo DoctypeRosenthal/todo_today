@@ -124,14 +124,17 @@ render maybeActiveTick { interval, color, title } =
         isHovered =
             case maybeActiveTick of
                 Just activeTick ->
-                    Tick.within startTick endTick activeTick
+                    Tick.within startTick endTick (Tick.add activeTick Tick.single)
 
                 Nothing ->
                     False
+
+        tickIndexStr =
+            String.fromInt << Tick.index
     in
     div
         [ classList [ ( "todo", True ), ( "todo--hover", isHovered ) ]
-        , style "grid-row" (Tick.toString startTick ++ " / " ++ Tick.toString endTick)
+        , style "grid-row" (tickIndexStr startTick ++ " / " ++ tickIndexStr endTick)
         , style "background" <| "blue"
         ]
         [ Html.text title ]

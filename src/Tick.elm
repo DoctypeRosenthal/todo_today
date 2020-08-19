@@ -21,6 +21,11 @@ add (Tick a) (Tick b) =
     Tick (a + b)
 
 
+sub : Tick -> Tick -> Tick
+sub (Tick a) (Tick b) =
+    Tick (a - b)
+
+
 ge : Tick -> Tick -> Bool
 ge (Tick a) (Tick b) =
     a >= b
@@ -33,7 +38,7 @@ le (Tick a) (Tick b) =
 
 within : Tick -> Tick -> Tick -> Bool
 within lower upper x =
-    le lower x && ge x upper
+    le lower x && le x upper
 
 
 toString : Tick -> String
@@ -76,6 +81,11 @@ fromPosix zone posix =
 
         else
             nowInMinutes - mod + base
+
+
+index : Tick -> Int
+index (Tick int) =
+    int // base
 
 
 toInt : Tick -> Int

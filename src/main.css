@@ -224,6 +224,10 @@ img {
   background: #727272;
   width: 1.3rem;
 }
+.tick-debug-nr {
+  position: absolute;
+  right: 0;
+}
 .timeline {
   height: 100%;
   position: relative;
