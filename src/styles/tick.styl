@@ -1,14 +1,15 @@
-
+@import "constants.styl"
 
 .tick
   position: relative
 
 
 .tick::after
-  content: ""
-  position: absolute
-  height: 100%
-  width: 100%
+  // the invisible mouse detector area
+  content ""
+  position absolute
+  height 100%
+  width 100% + todo_width
 
 
 .tick__number
