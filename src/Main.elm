@@ -96,14 +96,11 @@ update msg model =
 
             else
                 let
-                    nextId =
-                        getNextId (List.map Tuple.second model.plans) model.now
-
                     newPlan =
-                        DayPlan.new model.timeZone model.now nextId title
+                        DayPlan.new model.timeZone model.now title
 
                     newToDo =
-                        ToDo.new nextId (Tick.fromPosix model.timeZone model.now) model.home
+                        ToDo.new (Tick.fromPosix model.timeZone model.now) model.home
 
                     planWithTodo =
                         DayPlan.update (DayPlan.AddToDo newToDo) newPlan

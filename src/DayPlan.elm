@@ -16,8 +16,7 @@ import Util exposing (ID, Location, getNextId, onlyUpdateX)
 
 
 type alias Model =
-    { id : ID
-    , title : String
+    { title : String
     , color : String
     , createdAt : Date
     , lastUsedAt : Date
@@ -38,8 +37,8 @@ type alias DayPlan =
     ( View, Model )
 
 
-new : Time.Zone -> Time.Posix -> ID -> String -> DayPlan
-new timeZone posix id title =
+new : Time.Zone -> Time.Posix -> String -> DayPlan
+new timeZone posix title =
     let
         today =
             Date.fromPosix timeZone posix
@@ -49,8 +48,7 @@ new timeZone posix id title =
       , isEditing = False
       , activeTick = Nothing
       }
-    , { id = id
-      , title = title
+    , { title = title
       , color = "yellow"
       , createdAt = today
       , lastUsedAt = today
@@ -67,8 +65,7 @@ default =
       , isEditing = True
       , activeTick = Nothing
       }
-    , { id = 0
-      , title = "Test Dayplan"
+    , { title = "Test Dayplan"
       , color = "yellow"
       , createdAt = Date.fromCalendarDate 18 Sep 20
       , lastUsedAt = Date.fromCalendarDate 18 Sep 20

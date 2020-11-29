@@ -20,8 +20,7 @@ type alias End =
 
 
 type alias ToDo =
-    { id : ID
-    , title : String
+    { title : String
     , isDone : Bool
     , interval : ( Start, End )
     , location : Location
@@ -29,10 +28,9 @@ type alias ToDo =
     }
 
 
-new : ID -> Tick -> Location -> ToDo
-new id startTick location =
-    { id = id
-    , title = "New ToDo"
+new : Tick -> Location -> ToDo
+new startTick location =
+    { title = "New ToDo"
     , isDone = False
     , interval = ( startTick, Tick.plus startTick <| Tick.fromInt 10 )
     , location = location
@@ -42,8 +40,7 @@ new id startTick location =
 
 default : ToDo
 default =
-    { id = 0
-    , title = "New ToDo"
+    { title = "New ToDo"
     , isDone = False
     , interval = ( Tick.fromInt <| 12 * 12, Tick.fromInt <| 13 * 12 )
     , location = Util.location "Köln"
