@@ -34,7 +34,7 @@ new id startTick location =
     { id = id
     , title = "New ToDo"
     , isDone = False
-    , interval = ( startTick, Tick.add startTick <| Tick.fromInt 10 )
+    , interval = ( startTick, Tick.plus startTick <| Tick.fromInt 10 )
     , location = location
     , color = Color.rgb 255 255 255
     }
@@ -80,7 +80,7 @@ update msg todo =
 
                 nextInterval =
                     if Tick.ge nextStart end then
-                        ( nextStart, Tick.add nextStart Tick.single )
+                        ( nextStart, Tick.plus nextStart Tick.single )
 
                     else
                         ( nextStart, end )
@@ -124,7 +124,7 @@ render maybeActiveTick { interval, color, title } =
         isHovered =
             case maybeActiveTick of
                 Just activeTick ->
-                    Tick.within startTick endTick (Tick.add activeTick Tick.single)
+                    Tick.within startTick endTick (Tick.plus activeTick Tick.single)
 
                 Nothing ->
                     False

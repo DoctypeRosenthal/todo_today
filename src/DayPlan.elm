@@ -232,16 +232,52 @@ renderPreview ( view, model ) =
 
 
 
+-- EDITOR
 -- TODO: Maybe this can be integrated into the main render function?
+
+
+getCompleteWorkingTime : List ToDo -> Float
+getCompleteWorkingTime toDos =
+    toDos
+        |> List.map (.interval >> Tick.intervalLen >> Tick.float)
+        |> List.sum
+
+
+renderAmountWorkingTime : List ToDo -> Html Msg
+renderAmountWorkingTime toDos =
+    let
+        workingTime =
+            String.fromFloat <| getCompleteWorkingTime toDos / 60.0
+    in
+    div [ class "progress-bar" ]
+        [ div
+            [ class "progress-bar__progress"
+            , style "width" (workingTime ++ "%")
+            ]
+            [ Html.text <| workingTime ++ "h" ]
+        ]
 
 
 renderEditor : DayPlan -> Html Msg
 renderEditor (( view, model ) as plan) =
+    let
+        listLenStr =
+            String.fromInt << List.length
+
+        totalTodoCount =
+            listLenStr model.todos
+
+        doneTodoCount =
+            (listLenStr << List.filter .isDone) model.todos
+    in
     div [ class "editor" ]
         [ div [ class "editor__background" ] []
         , div [ class "editor__inner" ]
-            [ div [ class "editor__header" ]
+            [ div [ class "editor__sidebar" ]
                 [ Html.h3
+                    [ class "editor__close-btn", onClick NoOp ]
+                    []
+                , Html.h3
                     [ class "editor__title"
                     , onDoubleClick <|
                         if view.isEditingTitle then
@@ -269,17 +305,14 @@ renderEditor (( view, model ) as plan) =
                     [ Html.text " zuletzt benutzt: "
                     , Html.text <| Date.format "dd.M.y" model.lastUsedAt
                     ]
-                , Html.button [ class "editor__create-btn" ] [ Html.text "+ Neues Todo" ]
+                , div [ class "dayplan__progress" ]
+                    [ Html.div [] [ Html.text "Arbeitszeit:" ]
+                    , renderAmountWorkingTime model.todos
+                    , Html.text <| totalTodoCount ++ " ToDos, " ++ doneTodoCount ++ " erledigt"
+                    ]
+                , Html.button [ class "editor__delete-btn", onClick RemoveMe ] [ Html.text "Löschen" ]
                 ]
             , renderTimeline view.activeTick model.todos
-            , div [ class "dayplan__footer" ]
-                [ Html.button
-                    [ class "dayplan__color-picker-btn", onClick ToggleColorPicker ]
-                    [ colorPicker view.isColorPickerVisible ]
-                , Html.button
-                    [ class "dayplan__delete-btn", onClick RemoveMe ]
-                    []
-                ]
             ]
         ]
 

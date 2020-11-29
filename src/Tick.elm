@@ -16,13 +16,13 @@ type Tick
     = Tick Minute
 
 
-add : Tick -> Tick -> Tick
-add (Tick a) (Tick b) =
+plus : Tick -> Tick -> Tick
+plus (Tick a) (Tick b) =
     Tick (a + b)
 
 
-sub : Tick -> Tick -> Tick
-sub (Tick a) (Tick b) =
+minus : Tick -> Tick -> Tick
+minus (Tick a) (Tick b) =
     Tick (a - b)
 
 
@@ -34,6 +34,11 @@ ge (Tick a) (Tick b) =
 le : Tick -> Tick -> Bool
 le (Tick a) (Tick b) =
     a <= b
+
+
+intervalLen : ( Tick, Tick ) -> Tick
+intervalLen ( start, end ) =
+    minus end start
 
 
 within : Tick -> Tick -> Tick -> Bool
