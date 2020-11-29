@@ -2,7 +2,7 @@ module DayPlan exposing (DayPlan, Msg(..), Now, default, new, render, renderEdit
 
 import Date exposing (Date)
 import Html exposing (Html, div, h1)
-import Html.Attributes as Attr exposing (class, style)
+import Html.Attributes as Attr exposing (class, classList, style)
 import Html.Events as Event exposing (onBlur, onClick, onDoubleClick, onInput)
 import Html.Events.Extra.Pointer as Pointer
 import Tick exposing (Tick)
@@ -322,16 +322,7 @@ renderTodosPreview todo =
 colorPicker : Bool -> Html Msg
 colorPicker isVisible =
     div
-        [ class
-            ("dayplan__color-picker "
-                ++ (if isVisible then
-                        "visible"
-
-                    else
-                        ""
-                   )
-            )
-        ]
+        [ classList [ ( "dayplan__color-picker ", True ), ( "visible", isVisible ) ] ]
         ([ "red", "blue", "yellow" ] |> List.map toColorBtn)
 
 
