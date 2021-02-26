@@ -274,7 +274,7 @@ renderEditor (( view, model ) as plan) =
                 [ Html.h3
                     [ class "editor__close-btn", onClick NoOp ]
                     []
-                , Html.h3
+                , Html.h2
                     [ class "editor__title"
                     , onDoubleClick <|
                         if view.isEditingTitle then
@@ -298,16 +298,16 @@ renderEditor (( view, model ) as plan) =
                         [ Html.text model.title
                         ]
                     )
-                , div [ class "dayplan__subtitle" ]
+                , div [ class "editor__subtitle" ]
                     [ Html.text " zuletzt benutzt: "
                     , Html.text <| Date.format "dd.M.y" model.lastUsedAt
                     ]
-                , div [ class "dayplan__progress" ]
+                , div [ class "editor__progress" ]
                     [ Html.div [] [ Html.text "Arbeitszeit:" ]
                     , renderAmountWorkingTime model.todos
                     , Html.text <| totalTodoCount ++ " ToDos, " ++ doneTodoCount ++ " erledigt"
                     ]
-                , Html.button [ class "editor__delete-btn", onClick RemoveMe ] [ Html.text "Löschen" ]
+                , Html.button [ class "btn btn--outlined btn--delete", onClick RemoveMe ] [ Html.text "Löschen" ]
                 ]
             , renderTimeline view.activeTick model.todos
             ]
@@ -395,4 +395,26 @@ renderTimeline activeTick todos =
 
         --, Pointer.onOut (always Nothing >> SetActiveTick)
         ]
-        (renderedTicks ++ [ separator ] ++ List.map (todoView activeTick) todos)
+        ([ Html.button
+            [ class "btn btn--add-item-big" ]
+            [ Html.text "NEUES TODO" ]
+         , Html.div [ class "timeline__now-line" ] [ Html.div [ class "timeline__now-text" ] [ Html.text "24:59" ] ]
+         , Html.div
+            [ class "todo-detail-card" ]
+            [ Html.div [ class "todo-detail-card__map" ] []
+            , Html.div [ class "todo-detail-card__actions" ]
+                [ Html.button [ class "btn btn--text btn--color-picker" ] []
+                , Html.button [ class "btn btn--text btn--trash" ] []
+                ]
+            , Html.h2 [ class "todo-detail-card__title" ] [ Html.div [ class "todo-detail-card__" ] [], Html.text "LALALA" ]
+            , Html.div [ class "todo-detail-card__location" ] [ Html.text "Ort" ]
+            , Html.div [ class "todo-detail-card__time" ] [ Html.text "11:50 - 12:30" ]
+            , Html.div [ class "todo-detail-card__description" ] [ Html.text "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." ]
+            , Html.button [ class "btn btn--check" ] [ Html.text "ERLEDIGT" ]
+            ]
+         ]
+            ++ (renderedTicks
+                    ++ [ separator ]
+                    ++ List.map (todoView activeTick) todos
+               )
+        )

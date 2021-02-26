@@ -4,11 +4,18 @@
   display: flex
   justify-content: flex-start
   align-items: center
-  padding: 8px
+  padding: default_spacing
   margin-right: 1rem
   box-shadow: 1px 2px 0 0 rgba(66, 66, 66, 0)
   transition: box-shadow .3s
 
+  .checkbox
+    position relative
+    margin-right default_spacing
 
-.todo--hover
-  box-shadow: 1px 3px 10px -2px rgba(66, 66, 66, 0.84)
+  &__time
+    font-weight normal
+    margin-right default_spacing
+
+  &--hover
+    box-shadow: 1px 3px 10px -2px rgba(66, 66, 66, 0.84)

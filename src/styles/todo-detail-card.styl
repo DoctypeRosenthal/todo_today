@@ -1,0 +1,67 @@
+
+.todo-detail-card
+  position absolute
+  z-index 100
+  background white
+  width 400px
+  left 100%
+  top 50%
+  margin-top -50%
+  padding big_spacing
+  display flex
+  flex-direction column
+
+  shadow_default()
+
+  &__map
+    background grey
+    height 300px
+    margin -1*big_spacing -1*big_spacing medium_spacing
+
+  &__actions
+    position absolute
+    top big_spacing
+    right big_spacing
+
+  &__title,
+  &__location,
+  &__time,
+  &__description
+    position relative
+    line-height 1.35em
+    padding-left 2*big_spacing
+    margin default_spacing 0
+
+    &:before
+      position absolute
+      left 0
+      top 0
+      width 2*big_spacing
+      display flex
+      align-items center
+      justify-content center
+      height 100%
+      content ""
+      background-size 1em
+
+  &__title:before
+    content "⬤"
+    color $green
+
+  &__location:before
+    icon("location")
+
+  &__time:before
+    icon("time2")
+
+  &__description:before
+    icon("text-right")
+    background-position center top
+
+  .btn--check
+    align-self flex-end
+
+
+
+
+

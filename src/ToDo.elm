@@ -2,7 +2,8 @@ module ToDo exposing (End, Msg(..), Start, ToDo, default, new, render, renderPre
 
 import Element as Color exposing (Color)
 import Html exposing (Html, div)
-import Html.Attributes exposing (classList, style)
+import Html.Attributes exposing (class, classList, style, type_)
+import Html.Events exposing (onClick)
 import Tick exposing (Tick)
 import Util exposing (ID, Location)
 
@@ -41,7 +42,7 @@ new startTick location =
 default : ToDo
 default =
     { title = "New ToDo"
-    , isDone = False
+    , isDone = True
     , interval = ( Tick.fromInt <| 12 * 12, Tick.fromInt <| 13 * 12 )
     , location = Util.location "Köln"
     , color = Color.rgb 255 255 255
@@ -54,7 +55,7 @@ default =
 
 type Msg
     = SetTitle String
-    | ToggleIsDone Bool
+    | ToggleIsDone
     | SetStartTime Tick
     | SetEndTime Tick
     | SetLocation Location
@@ -67,8 +68,8 @@ update msg todo =
         SetTitle string ->
             { todo | title = string }
 
-        ToggleIsDone bool ->
-            { todo | isDone = bool }
+        ToggleIsDone ->
+            { todo | isDone = not todo.isDone }
 
         SetStartTime nextStart ->
             let
@@ -113,7 +114,7 @@ renderPreview toDo =
 
 
 render : Maybe Tick -> ToDo -> Html Msg
-render maybeActiveTick { interval, color, title } =
+render maybeActiveTick { isDone, interval, color, title } =
     let
         ( startTick, endTick ) =
             interval
@@ -134,4 +135,11 @@ render maybeActiveTick { interval, color, title } =
         , style "grid-row" (tickIndexStr startTick ++ " / " ++ tickIndexStr endTick)
         , style "background" <| "blue"
         ]
-        [ Html.text title ]
+        [ Html.label
+            [ classList [ ( "checkbox", True ), ( "checkbox--checked", isDone ) ], onClick ToggleIsDone ]
+            [ Html.input [ type_ "checkbox" ] []
+            , Html.div [ class "checkbox__icon" ] []
+            ]
+        , Html.span [ class "todo__time" ] [ Html.text "11:45" ]
+        , Html.text title
+        ]

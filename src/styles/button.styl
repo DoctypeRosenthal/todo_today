@@ -1,4 +1,54 @@
+@import "mixins"
+@import "constants"
+
 .btn
   border none
-  background none
-  padding default_spacing
+  padding medium_spacing
+  background galuboi
+  color white
+  border-radius default_spacing
+  shadow_default(galuboi)
+
+  &--add-item-big
+    padding medium_spacing big_spacing medium_spacing big_spacing*2
+    border-radius big_spacing
+    line-height 1
+    font-weight 700
+    shadow_medium(galuboi)
+
+    &:before
+      position absolute
+      left 0
+      top 0
+      bottom 0
+      content "+"
+      box-sizing border-box
+      padding medium_spacing
+
+  &--outlined
+    background-color transparent
+    box-shadow none
+    border 1px solid red
+
+  &--text
+    background-color transparent
+    box-shadow none
+
+  &--delete
+    color red
+
+  &--round-toggle
+    border 1px solid light_gray
+    border-radius 100%
+
+  &--color-picker
+    icon("palette")
+
+  &--trash
+    icon("trash")
+
+  &--check
+    padding-left 2*big_spacing
+    icon("check")
+    background-position medium_spacing center
+    background-size 1em

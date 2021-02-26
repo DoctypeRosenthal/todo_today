@@ -1,9 +1,21 @@
-@import "styles/constants.styl"
+@import "constants.styl"
+
+subtitle()
+  font-size .75rem
+  text-transform: uppercase
+  letter-spacing 1px
+  opacity 0.75
+
+shadow_medium(color = dark_gray)
+  box-shadow 4px 8px 30px -10px color
+
+shadow_default(color = dark_gray)
+  box-shadow 1px 3px 8px -3px color
 
 icon(name)
-  interpolated = "../public/" + name + ".svg"
   background-repeat no-repeat
   background-position center
+  interpolated = "../../public/" + name + ".svg"
   background-image url(interpolated)
 
 soft_bg_colors()

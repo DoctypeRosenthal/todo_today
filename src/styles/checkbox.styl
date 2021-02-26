@@ -1,0 +1,25 @@
+.checkbox
+  box-sizing border-box
+  width 1em
+  height 1em
+  border-radius 5px
+  border 2px solid white
+  background-color transparent
+  display block
+
+  > input
+    visibility hidden
+
+  &--checked &__icon
+    visibility visible
+
+  &__icon
+    visibility hidden
+    position absolute
+    height 1em
+    width 1em
+    top 0
+    left 0
+    line-height .6em
+    icon("check")
+    background-size .8em

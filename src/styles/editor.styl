@@ -8,11 +8,30 @@
   align-items: stretch
   justify-content: flex-end
 
+  .btn--add-item-big
+    position absolute
+    left 120px
+    top 50px
+    z-index 10
+
   &__close-btn
     height 3rem
+    content " "
+    icon("close")
+    background-position left center
+    margin-bottom 2*big_spacing
 
-    &::before
-      content "X"
+  &__title
+    margin-bottom medium_spacing
+
+  &__subtitle
+    subtitle()
+    margin-bottom 2*big_spacing
+
+  &__progress
+    line-height 2.5em
+    font-size .9em
+    margin-bottom 2*big_spacing
 
   &__background
     position absolute

@@ -1,4 +1,5 @@
-@import "styles/normalize.css";
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,400;0,600;0,700;1,200;1,400;1,600&display=swap");
+@import "normalize.css";
 [data-elm-hot="true"] {
   height: inherit;
 }
@@ -19,6 +20,7 @@ h3,
 h4,
 h5 {
   margin: 0;
+  font-weight: 600;
 }
 img {
   margin: 20px 0;
@@ -29,13 +31,66 @@ img {
 }
 .btn {
   border: none;
-  background: none;
-  padding: 8px;
+  padding: 16px;
+  background: #03a9f4;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 1px 3px 8px -3px #03a9f4;
+}
+.btn--add-item-big {
+  padding: 16px 24px 16px 48px;
+  border-radius: 24px;
+  line-height: 1;
+  font-weight: 700;
+  box-shadow: 4px 8px 30px -10px #03a9f4;
+}
+.btn--add-item-big:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  content: "+";
+  box-sizing: border-box;
+  padding: 16px;
+}
+.btn--outlined {
+  background-color: transparent;
+  box-shadow: none;
+  border: 1px solid #f00;
+}
+.btn--text {
+  background-color: transparent;
+  box-shadow: none;
+}
+.btn--delete {
+  color: #f00;
+}
+.btn--round-toggle {
+  border: 1px solid #e4e4e4;
+  border-radius: 100%;
+}
+.btn--color-picker {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../public/palette.svg");
+}
+.btn--trash {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../public/trash.svg");
+}
+.btn--check {
+  padding-left: 48px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../public/check.svg");
+  background-position: 16px center;
+  background-size: 1em;
 }
 .dayplan {
   position: relative;
   width: 240px;
-  box-shadow: 4px 10px 20px -10px #777;
+  box-shadow: box_shadow;
   margin: 1em;
   line-height: 1.5em;
 }
@@ -64,12 +119,12 @@ img {
 .dayplan button.pinned {
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url("../public/pinned.svg");
+  background-image: url("../../public/pinned.svg");
 }
 .dayplan button.unpinned {
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url("../public/unpinned.svg");
+  background-image: url("../../public/unpinned.svg");
 }
 .dayplan__header {
   padding: 24px 24px 8px;
@@ -109,7 +164,7 @@ img {
   position: relative;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url("../public/palette.svg");
+  background-image: url("../../public/palette.svg");
 }
 .dayplan__color-picker-btn:focus {
   background-color: rgba(0,0,0,0.2);
@@ -119,7 +174,7 @@ img {
   z-index: 1;
   background: #fff;
   border: 1px solid #e4e4e4;
-  box-shadow: 4px 10px 20px -10px #777;
+  box-shadow: box_shadow;
   padding: 8px;
   display: none;
   top: 100%;
@@ -147,7 +202,7 @@ img {
 .dayplan__delete-btn {
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url("../public/trash.svg");
+  background-image: url("../../public/trash.svg");
 }
 .editor {
   position: fixed;
@@ -159,11 +214,35 @@ img {
   align-items: stretch;
   justify-content: flex-end;
 }
+.editor .btn--add-item-big {
+  position: absolute;
+  left: 120px;
+  top: 50px;
+  z-index: 10;
+}
 .editor__close-btn {
   height: 3rem;
+  content: " ";
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../public/close.svg");
+  background-position: left center;
+  margin-bottom: 48px;
 }
-.editor__close-btn::before {
-  content: "X";
+.editor__title {
+  margin-bottom: 16px;
+}
+.editor__subtitle {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.75;
+  margin-bottom: 48px;
+}
+.editor__progress {
+  line-height: 2.5em;
+  font-size: 0.9em;
+  margin-bottom: 48px;
 }
 .editor__background {
   position: absolute;
@@ -254,7 +333,6 @@ img {
   height: 100%;
   position: relative;
   box-sizing: border-box;
-  overflow: hidden;
   padding: 70px 0;
   display: grid;
   grid-template-columns: 100px 1px 300px;
@@ -270,6 +348,25 @@ img {
   transform-origin: center;
   position: relative;
 }
+.timeline__now-line {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: #f00;
+  top: 300px;
+  left: 50px;
+}
+.timeline__now-text {
+  position: absolute;
+  font-size: 0.9em;
+  color: #f00;
+  top: -0.5em;
+  line-height: 1em;
+  width: 50px;
+  padding-right: 0.5em;
+  text-align: right;
+  right: 100%;
+}
 .todo {
   color: #fff;
   font-weight: bold;
@@ -281,6 +378,112 @@ img {
   box-shadow: 1px 2px 0 0 rgba(66,66,66,0);
   transition: box-shadow 0.3s;
 }
+.todo .checkbox {
+  position: relative;
+  margin-right: 8px;
+}
+.todo__time {
+  font-weight: normal;
+  margin-right: 8px;
+}
 .todo--hover {
   box-shadow: 1px 3px 10px -2px rgba(66,66,66,0.84);
+}
+.checkbox {
+  box-sizing: border-box;
+  width: 1em;
+  height: 1em;
+  border-radius: 5px;
+  border: 2px solid #fff;
+  background-color: transparent;
+  display: block;
+}
+.checkbox > input {
+  visibility: hidden;
+}
+.checkbox--checked .checkbox__icon {
+  visibility: visible;
+}
+.checkbox__icon {
+  visibility: hidden;
+  position: absolute;
+  height: 1em;
+  width: 1em;
+  top: 0;
+  left: 0;
+  line-height: 0.6em;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../public/check.svg");
+  background-size: 0.8em;
+}
+.todo-detail-card {
+  position: absolute;
+  z-index: 100;
+  background: #fff;
+  width: 400px;
+  left: 100%;
+  top: 50%;
+  margin-top: -50%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 1px 3px 8px -3px #777;
+}
+.todo-detail-card__map {
+  background: #808080;
+  height: 300px;
+  margin: -24px -24px 16px;
+}
+.todo-detail-card__actions {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+.todo-detail-card__title,
+.todo-detail-card__location,
+.todo-detail-card__time,
+.todo-detail-card__description {
+  position: relative;
+  line-height: 1.35em;
+  padding-left: 48px;
+  margin: 8px 0;
+}
+.todo-detail-card__title:before,
+.todo-detail-card__location:before,
+.todo-detail-card__time:before,
+.todo-detail-card__description:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  content: "";
+  background-size: 1em;
+}
+.todo-detail-card__title:before {
+  content: "⬤";
+  color: #8bc34a;
+}
+.todo-detail-card__location:before {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../public/location.svg");
+}
+.todo-detail-card__time:before {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../public/time2.svg");
+}
+.todo-detail-card__description:before {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../public/text-right.svg");
+  background-position: center top;
+}
+.todo-detail-card .btn--check {
+  align-self: flex-end;
 }
