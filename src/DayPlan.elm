@@ -395,4 +395,13 @@ renderTimeline activeTick todos =
 
         --, Pointer.onOut (always Nothing >> SetActiveTick)
         ]
-        (renderedTicks ++ [ separator ] ++ List.map (todoView activeTick) todos)
+        ([ Html.button
+            [ class "btn btn--add-item-big" ]
+            [ Html.text "neues Todo" ]
+         , Html.div [ class "timeline__now-line" ] [ Html.div [ class "timeline__now-text" ] [ Html.text "24:59" ] ]
+         ]
+            ++ (renderedTicks
+                    ++ [ separator ]
+                    ++ List.map (todoView activeTick) todos
+               )
+        )

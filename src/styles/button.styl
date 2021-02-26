@@ -1,4 +1,28 @@
+@import "mixins.styl"
+
 .btn
   border none
   background none
   padding default_spacing
+  letter-spacing .1em
+  &--add-item-big
+    background #03a9f4
+    line-height 2em
+    padding .5em 2em .5em 2.5em
+    color white
+    border-radius 2em
+    text-transform uppercase
+
+    shadow_default(#03a9f4)
+
+    &:before
+      content "+"
+      position absolute
+      left 0
+      top 0
+      box-sizing border-box
+      height 100%
+      width 2em
+      line-height 2em
+      padding 0 .5em
+      font-size 1.4em

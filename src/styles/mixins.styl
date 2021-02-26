@@ -1,5 +1,8 @@
 @import "styles/constants.styl"
 
+shadow_default(color = black)
+  box-shadow 1px 3px 10px -2px color
+
 icon(name)
   interpolated = "../public/" + name + ".svg"
   background-repeat no-repeat

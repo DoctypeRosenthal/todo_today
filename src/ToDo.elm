@@ -2,7 +2,7 @@ module ToDo exposing (End, Msg(..), Start, ToDo, default, new, render, renderPre
 
 import Element as Color exposing (Color)
 import Html exposing (Html, div)
-import Html.Attributes exposing (classList, style)
+import Html.Attributes exposing (class, classList, style, type_)
 import Tick exposing (Tick)
 import Util exposing (ID, Location)
 
@@ -134,4 +134,6 @@ render maybeActiveTick { interval, color, title } =
         , style "grid-row" (tickIndexStr startTick ++ " / " ++ tickIndexStr endTick)
         , style "background" <| "blue"
         ]
-        [ Html.text title ]
+        [ Html.input [ class "todo__check", type_ "checkbox" ] []
+        , Html.text title
+        ]
