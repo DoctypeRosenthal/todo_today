@@ -134,11 +134,16 @@ render maybeActiveTick { isDone, interval, color, title } =
         [ classList [ ( "todo", True ), ( "todo--hover", isHovered ) ]
         , style "grid-row" (tickIndexStr startTick ++ " / " ++ tickIndexStr endTick)
         , style "background" <| "blue"
+        , onClick ToggleIsDone
         ]
         [ Html.label
             [ classList [ ( "checkbox", True ), ( "checkbox--checked", isDone ) ], onClick ToggleIsDone ]
             [ Html.input [ type_ "checkbox" ] []
-            , Html.div [ class "checkbox__icon" ] []
+            , Html.div
+                [ class "checkbox__icon"
+                , style "color" <| "blue"
+                ]
+                []
             ]
         , Html.span [ class "todo__time" ] [ Html.text "11:45" ]
         , Html.text title

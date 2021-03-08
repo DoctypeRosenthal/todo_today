@@ -1,18 +1,29 @@
 @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,400;0,600;0,700;1,200;1,400;1,600&display=swap");
 @import "normalize.css";
+@import "~@fortawesome/fontawesome-free/css/solid.css";
 [data-elm-hot="true"] {
   height: inherit;
 }
 body {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-style: normal;
+  font-variant-ligatures: normal;
+  font-variant-caps: normal;
+  font-variant-numeric: normal;
+  font-variant-east-asian: normal;
+  font-weight: normal;
+  font-stretch: normal;
+  line-height: 150%;
+  font-family: "Source Sans Pro", sans-serif;
   margin: 0;
   text-align: left;
   padding: 24px;
-  color: #293c4b;
   cursor: default;
 }
 h1 {
   font-size: 30px;
+}
+h2 {
+  font-size: 1.5rem;
 }
 h1,
 h2,
@@ -20,7 +31,7 @@ h3,
 h4,
 h5 {
   margin: 0;
-  font-weight: 600;
+  font-weight: normal;
 }
 img {
   margin: 20px 0;
@@ -38,20 +49,17 @@ img {
   box-shadow: 1px 3px 8px -3px #03a9f4;
 }
 .btn--add-item-big {
-  padding: 16px 24px 16px 48px;
+  padding: 16px 24px;
   border-radius: 24px;
   line-height: 1;
-  font-weight: 700;
   box-shadow: 4px 8px 30px -10px #03a9f4;
 }
 .btn--add-item-big:before {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  content: "+";
-  box-sizing: border-box;
-  padding: 16px;
+  font-family: "Font Awesome 5 Free";
+  content: '\f067';
+}
+.btn--add-item-big:before {
+  padding-right: 16px;
 }
 .btn--outlined {
   background-color: transparent;
@@ -69,23 +77,24 @@ img {
   border: 1px solid #e4e4e4;
   border-radius: 100%;
 }
-.btn--color-picker {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/palette.svg");
+.btn--color-picker:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f53f';
 }
-.btn--trash {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/trash.svg");
+.btn--trash:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f2ed';
 }
 .btn--check {
-  padding-left: 48px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/check.svg");
   background-position: 16px center;
   background-size: 1em;
+}
+.btn--check:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f00c';
+}
+.btn--check:before {
+  padding-right: 16px;
 }
 .dayplan {
   position: relative;
@@ -116,15 +125,13 @@ img {
   height: 32px;
   width: 32px;
 }
-.dayplan button.pinned {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/pinned.svg");
+.dayplan button.pinned:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\null';
 }
-.dayplan button.unpinned {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/unpinned.svg");
+.dayplan button.unpinned:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\null';
 }
 .dayplan__header {
   padding: 24px 24px 8px;
@@ -158,13 +165,14 @@ img {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  opacity: 0.75;
+  color: #757575;
 }
 .dayplan__color-picker-btn {
   position: relative;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/palette.svg");
+}
+.dayplan__color-picker-btn:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f53f';
 }
 .dayplan__color-picker-btn:focus {
   background-color: rgba(0,0,0,0.2);
@@ -199,10 +207,9 @@ img {
 .dayplan__color-picker > button + button {
   margin-left: 8px;
 }
-.dayplan__delete-btn {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/trash.svg");
+.dayplan__delete-btn:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f2ed';
 }
 .editor {
   position: fixed;
@@ -221,13 +228,13 @@ img {
   z-index: 10;
 }
 .editor__close-btn {
+  font-size: 1.5rem;
   height: 3rem;
-  content: " ";
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/close.svg");
-  background-position: left center;
   margin-bottom: 48px;
+}
+.editor__close-btn:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f00d';
 }
 .editor__title {
   margin-bottom: 16px;
@@ -236,7 +243,7 @@ img {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  opacity: 0.75;
+  color: #757575;
   margin-bottom: 48px;
 }
 .editor__progress {
@@ -393,29 +400,34 @@ img {
   box-sizing: border-box;
   width: 1em;
   height: 1em;
-  border-radius: 5px;
-  border: 2px solid #fff;
   background-color: transparent;
   display: block;
 }
 .checkbox > input {
   visibility: hidden;
 }
-.checkbox--checked .checkbox__icon {
-  visibility: visible;
-}
 .checkbox__icon {
-  visibility: hidden;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  border-radius: 0.2em;
   position: absolute;
   height: 1em;
   width: 1em;
   top: 0;
   left: 0;
-  line-height: 0.6em;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/check.svg");
-  background-size: 0.8em;
+  line-height: 1em;
+}
+.checkbox__icon:before {
+  position: relative;
+  font-size: 0.8em;
+  vertical-align: top;
+}
+.checkbox--checked .checkbox__icon {
+  background: #fff;
+}
+.checkbox--checked .checkbox__icon:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f00c';
 }
 .todo-detail-card {
   position: absolute;
@@ -428,7 +440,7 @@ img {
   padding: 24px;
   display: flex;
   flex-direction: column;
-  box-shadow: 1px 3px 8px -3px #777;
+  box-shadow: 1px 3px 8px -3px #757575;
 }
 .todo-detail-card__map {
   background: #808080;
@@ -468,21 +480,20 @@ img {
   content: "⬤";
   color: #8bc34a;
 }
-.todo-detail-card__location:before {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/location.svg");
+.todo-detail-card__location:before:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\null';
 }
-.todo-detail-card__time:before {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/time2.svg");
+.todo-detail-card__time:before:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\null';
 }
 .todo-detail-card__description:before {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("../../public/text-right.svg");
   background-position: center top;
+}
+.todo-detail-card__description:before:before {
+  font-family: "Font Awesome 5 Free";
+  content: '\null';
 }
 .todo-detail-card .btn--check {
   align-self: flex-end;

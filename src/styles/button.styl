@@ -10,20 +10,14 @@
   shadow_default(galuboi)
 
   &--add-item-big
-    padding medium_spacing big_spacing medium_spacing big_spacing*2
+    padding medium_spacing big_spacing
     border-radius big_spacing
     line-height 1
-    font-weight 700
     shadow_medium(galuboi)
+    icon("plus")
 
     &:before
-      position absolute
-      left 0
-      top 0
-      bottom 0
-      content "+"
-      box-sizing border-box
-      padding medium_spacing
+      padding-right medium_spacing
 
   &--outlined
     background-color transparent
@@ -48,7 +42,8 @@
     icon("trash")
 
   &--check
-    padding-left 2*big_spacing
     icon("check")
     background-position medium_spacing center
     background-size 1em
+    &:before
+      padding-right medium_spacing

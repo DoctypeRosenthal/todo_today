@@ -1,10 +1,10 @@
-@import "constants.styl"
+@import "constants"
 
 subtitle()
   font-size .75rem
   text-transform: uppercase
   letter-spacing 1px
-  opacity 0.75
+  color dark_gray
 
 shadow_medium(color = dark_gray)
   box-shadow 4px 8px 30px -10px color
@@ -12,11 +12,25 @@ shadow_medium(color = dark_gray)
 shadow_default(color = dark_gray)
   box-shadow 1px 3px 8px -3px color
 
+//icon(name)
+//  background-repeat no-repeat
+//  background-position center
+//  interpolated = "../../public/" + name + ".svg"
+//  background-image url(interpolated)
+
+icons = {
+  "close": "f00d",
+  "check": "f00c",
+  "trash": "f2ed",
+  "palette": "f53f",
+  "square": "f0c8",
+  "plus": "f067",
+}
+
 icon(name)
-  background-repeat no-repeat
-  background-position center
-  interpolated = "../../public/" + name + ".svg"
-  background-image url(interpolated)
+  &:before
+    font-family "Font Awesome 5 Free"
+    content: "\" + icons[name]
 
 soft_bg_colors()
   &.red
