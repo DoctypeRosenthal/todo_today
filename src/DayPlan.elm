@@ -1,8 +1,8 @@
 module DayPlan exposing (DayPlan, Msg(..), Now, default, new, render, renderEditor, update)
 
 import Date exposing (Date)
-import Html exposing (Html, div, h1)
-import Html.Attributes as Attr exposing (class, classList, style)
+import Html exposing (Html, div, h1, iframe)
+import Html.Attributes as Attr exposing (class, classList, height, id, src, style, width)
 import Html.Events as Event exposing (onBlur, onClick, onDoubleClick, onInput)
 import Html.Events.Extra.Pointer as Pointer
 import Tick exposing (Tick)
@@ -307,7 +307,7 @@ renderEditor (( view, model ) as plan) =
                     , renderAmountWorkingTime model.todos
                     , Html.text <| totalTodoCount ++ " ToDos, " ++ doneTodoCount ++ " erledigt"
                     ]
-                , Html.button [ class "btn btn--outlined btn--delete", onClick RemoveMe ] [ Html.text "Löschen" ]
+                , div [] [ Html.button [ class "btn btn--outlined btn--delete btn--trash", onClick RemoveMe ] [ Html.text "Löschen" ] ]
                 ]
             , renderTimeline view.activeTick model.todos
             ]
@@ -399,19 +399,6 @@ renderTimeline activeTick todos =
             [ class "btn btn--add-item-big" ]
             [ Html.text "NEUES TODO" ]
          , Html.div [ class "timeline__now-line" ] [ Html.div [ class "timeline__now-text" ] [ Html.text "24:59" ] ]
-         , Html.div
-            [ class "todo-detail-card" ]
-            [ Html.div [ class "todo-detail-card__map" ] []
-            , Html.div [ class "todo-detail-card__actions" ]
-                [ Html.button [ class "btn btn--text btn--color-picker" ] []
-                , Html.button [ class "btn btn--text btn--trash" ] []
-                ]
-            , Html.h2 [ class "todo-detail-card__title" ] [ Html.div [ class "todo-detail-card__" ] [], Html.text "LALALA" ]
-            , Html.div [ class "todo-detail-card__location" ] [ Html.text "Ort" ]
-            , Html.div [ class "todo-detail-card__time" ] [ Html.text "11:50 - 12:30" ]
-            , Html.div [ class "todo-detail-card__description" ] [ Html.text "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." ]
-            , Html.button [ class "btn btn--check" ] [ Html.text "ERLEDIGT" ]
-            ]
          ]
             ++ (renderedTicks
                     ++ [ separator ]
